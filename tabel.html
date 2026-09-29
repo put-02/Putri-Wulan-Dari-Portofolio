@@ -1,0 +1,111 @@
+<!DOCTYPE html> 
+<html lang="id"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <title>Tugas Tabel HTML</title> 
+    <style> 
+        body { 
+            font-family: Arial, sans-serif; 
+            background-image: url("langit.jpeg"); 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed; 
+            margin: 0; 
+            padding: 30px; 
+        } 
+        h2 { 
+            text-align: center; 
+            margin-bottom: 25px; 
+        } 
+        table { 
+            width: 80%; 
+            margin: auto; 
+            border-collapse: collapse; 
+            background-color: white; 
+        } 
+        th, td { 
+            border: 1px solid #777; 
+            padding: 10px; 
+            text-align: center; 
+            vertical-align: middle; /* Memastikan semua konten di tengah secara vertikal */
+        } 
+        th { 
+            background-color: #a9d8e8; 
+        } 
+        .foto { 
+            background-color: #00ff4c; 
+            width: 100px; 
+        } 
+        .foto img { 
+            width: 80px; 
+            height: 80px; 
+            object-fit: cover; 
+            display: block; /* Menghilangkan celah kosong di bawah gambar */
+            margin: auto; 
+        } 
+        /* Warna background diubah sedikit lebih soft agar teks hitam tetap terbaca jelas */
+        .merah { background-color: #ffcccc; } 
+        .putih { background-color: white; } 
+        .kuning { background-color: #fff5cc; } 
+        .biru { background-color: #cce5ff; } 
+    </style> 
+</head> 
+<body> 
+
+    <h2>Tugas: Tabel HTML</h2> 
+
+    <table> 
+        <!-- Header --> 
+        <tr> 
+            <th rowspan="2">Foto</th> 
+            <th colspan="3">Data Siswa</th> 
+        </tr> 
+        <tr> 
+            <th>Nama</th> 
+            <th>Kelas</th> 
+            <th>Nilai</th> 
+        </tr> 
+
+        <!-- Siswa 1 --> 
+        <tr class="merah"> 
+            <td class="foto"> 
+                <img src="Stiker.jpeg" alt="Foto Siswa"> 
+            </td> 
+            <td>Arka</td> 
+            <td>XI PPLG</td> 
+            <td>90</td> 
+        </tr> 
+
+        <!-- Siswa 2 --> 
+        <tr class="putih"> 
+            <td class="foto"> 
+                <img src="timpa.jpeg" alt="Foto Siswa"> 
+            </td> 
+            <td>Tara</td> 
+            <td>XI PPLG</td> 
+            <td>98</td> 
+        </tr> 
+
+        <!-- Siswa 3 --> 
+        <tr class="kuning"> 
+            <td class="foto"> 
+                <img src="jumaat.jpeg" alt="Foto Siswa"> 
+            </td> 
+            <td>Haitang</td> 
+            <td>XI PPLG</td> 
+            <td>88</td> 
+        </tr> 
+
+        <!-- Siswa 4 --> 
+        <tr class="biru"> 
+            <td class="foto"> 
+                <img src="meme stiker.jpeg" alt="Foto Siswa"> 
+            </td> 
+            <td>Nala</td> 
+            <td>XI PPLG</td> 
+            <td>98</td> 
+        </tr> 
+    </table> 
+
+</body> 
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Putri</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f8eee8;
+            color: #24191a;
+            padding: 30px;
+        }
+
+        /* =========================
+           GRID CARD
+        ========================= */
+
+        .portfolio-grid {
+            max-width: 1750px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .card {
+            position: relative;
+            min-height: 375px;
+            background: #fff;
+            border: 1px solid #e7d9d5;
+            border-radius: 12px;
+            padding: 36px 37px;
+            cursor: pointer;
+            overflow: hidden;
+
+            transition:
+                transform .45s cubic-bezier(.2,.8,.2,1),
+                box-shadow .45s ease,
+                border-color .45s ease;
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 4px;
+            background: #6e1723;
+            transition: width .45s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 45px rgba(75, 30, 30, .12);
+            border-color: #d9c1bd;
+        }
+
+        .card:hover::after {
+            width: 100%;
+        }
+
+        /* =========================
+           NOMOR + KATEGORI
+        ========================= */
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .number {
+            font-size: 23px;
+            font-weight: 700;
+            color: #711b27;
+        }
+
+        .category {
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            color: #8d7c77;
+        }
+
+        /* =========================
+           CONTENT CARD
+        ========================= */
+
+        .card-content {
+            margin-top: 58px;
+        }
+
+        .card h2 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 31px;
+            line-height: 1.25;
+            margin-bottom: 22px;
+            color: #24191a;
+        }
+
+        .card p {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #897772;
+            max-width: 330px;
+        }
+
+        .detail {
+            display: inline-block;
+            margin-top: 36px;
+            color: #711b27;
+            font-size: 16px;
+            font-weight: 700;
+            transition: transform .3s ease;
+        }
+
+        .card:hover .detail {
+            transform: translateX(7px);
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(28, 16, 17, .72);
+            backdrop-filter: blur(8px);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 25px;
+            opacity: 0;
+            visibility: hidden;
+
+            transition:
+                opacity .35s ease,
+                visibility .35s ease;
+
+            z-index: 9999;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            width: min(950px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+
+            background: #fff;
+            border-radius: 20px;
+
+            transform: translateY(40px) scale(.94);
+            transition: transform .45s cubic-bezier(.2,.8,.2,1);
+
+            box-shadow: 0 30px 80px rgba(0,0,0,.3);
+            position: relative;
+        }
+
+        .modal.active .modal-box {
+            transform: translateY(0) scale(1);
+        }
+
+        /* =========================
+           CLOSE BUTTON
+        ========================= */
+
+        .close {
+            position: absolute;
+            right: 18px;
+            top: 18px;
+
+            width: 42px;
+            height: 42px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(255,255,255,.9);
+            color: #711b27;
+
+            font-size: 25px;
+            cursor: pointer;
+
+            z-index: 5;
+
+            transition:
+                transform .3s ease,
+                background .3s ease;
+        }
+
+        .close:hover {
+            transform: rotate(90deg);
+            background: #711b27;
+            color: white;
+        }
+
+        /* =========================
+           MODAL IMAGE
+        ========================= */
+
+        .modal-image {
+            width: 100%;
+            height: 430px;
+            object-fit: cover;
+            display: block;
+            background: #eee;
+        }
+
+        .modal-content {
+            padding: 38px 42px 45px;
+        }
+
+        .modal-category {
+            color: #8d7c77;
+            letter-spacing: 2px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .modal-title {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 38px;
+            margin-bottom: 18px;
+            color: #24191a;
+        }
+
+        .modal-description {
+            font-size: 17px;
+            line-height: 1.8;
+            color: #766663;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1200px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 15px;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                min-height: 340px;
+                padding: 28px;
+            }
+
+            .card h2 {
+                font-size: 27px;
+            }
+
+            .card-content {
+                margin-top: 45px;
+            }
+
+            .modal-image {
+                height: 250px;
+            }
+
+            .modal-content {
+                padding: 28px;
+            }
+
+            .modal-title {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="portfolio-grid">
+
+        <!-- CARD 01 -->
+        <div class="card"
+             onclick="openModal(
+                'gambar1.jpg',
+                'ORGANIZATION',
+                'Organizational Leadership',
+                'Pengalaman dalam mengoordinasikan tim, mengatur berbagai kegiatan, serta membantu menjalankan program organisasi. Gambar di atas merupakan dokumentasi kegiatan yang pernah dilakukan.'
+             )">
+
+            <div class="top">
+                <span class="number">01</span>
+                <span class="category">ORGANIZATION</span>
+            </div>
+
+            <div class="card-content">
+                <h2>Organizational Leadership</h2>
+
+                <p>
+                    Experience in coordinating teams,
+                    organizing activities, and supporting
+                    organizational programs.
+                </p>
+
+                <span class="detail">Lihat Detail →</span>
+            </div>
+        </div>
+
+
+        <!-- CARD 02 -->
+        <div class="card"
+             onclick="openModal(
+                'gambar2.jpg',
+                'EVENT',
+                'Event Coordination',
+                'Berperan dalam persiapan, koordinasi, pelaksanaan, dan evaluasi sebuah kegiatan. Gambar menunjukkan dokumentasi kegiatan atau event yang telah dilaksanakan.'
+             )">
+
+            <div class="top">
+                <span class="number">02</span>
+                <span class="category">EVENT</span>
+            </div>
+
+            <div class="card-content">
+                <h2>Event Coordination</h2>
+
+                <p>
+                    Supporting event preparation,
+                    coordination, execution, and evaluation.
+                </p>
+
+                <span class="detail">Lihat Detail →</span>
+            </div>
+        </div>
+
+
+        <!-- CARD 03 -->
+        <div class="card"
+             onclick="openModal(
+                'gambar3.jpg',
+                'BUSINESS',
+                'Business Activity',
+                'Dokumentasi pengalaman mengikuti aktivitas bisnis dan mempelajari bagaimana sebuah proses bisnis dijalankan secara langsung.'
+             )">
+
+            <div class="top">
+                <span class="number">03</span>
+                <span class="category">BUSINESS</span>
+            </div>
+
+            <div class="card-content">
+                <h2>Business Activity</h2>
+
+                <p>
+                    Participating in business activities and
+                    understanding practical business processes.
+                </p>
+
+                <span class="detail">Lihat Detail →</span>
+            </div>
+        </div>
+
+
+        <!-- CARD 04 -->
+        <div class="card"
+             onclick="openModal(
+                'gambar4.jpg',
+                'MARKETING',
+                'Marketing Activity',
+                'Kegiatan yang berhubungan dengan pemasaran, pembuatan ide promosi, komunikasi, dan berbagai materi untuk mendukung kegiatan marketing.'
+             )">
+
+            <div class="top">
+                <span class="number">04</span>
+                <span class="category">MARKETING</span>
+            </div>
+
+            <div class="card-content">
+                <h2>Marketing Activity</h2>
+
+                <p>
+                    Developing marketing ideas, promotional
+                    activities, and communication materials.
+                </p>
+
+                <span class="detail">Lihat Detail →</span>
+            </div>
+        </div>
+
+
+        <!-- CARD 05 -->
+        <div class="card"
+             onclick="openModal(
+                'gambar5.jpg',
+                'PROJECT',
+                'Project Coordination',
+                'Pengalaman dalam mengatur tugas proyek, membagi pekerjaan, serta memastikan setiap aktivitas berjalan sesuai dengan rencana yang telah dibuat.'
+             )">
+
+            <div class="top">
+                <span class="number">05</span>
+                <span class="category">PROJECT</span>
+            </div>
+
+            <div class="card-content">
+                <h2>Project Coordination</h2>
+
+                <p>
+                    Coordinating project tasks and ensuring
+                    activities progress according to the plan.
+                </p>
+
+                <span class="detail">Lihat Detail →</span>
+            </div>
+        </div>
+
+
+        <!-- CARD 06 -->
+        <div class="card"
+             onclick="openModal(
+                'gambar6.jpg',
+                'OPERATIONS',
+                'Business Operations',
+                'Pengalaman mendukung aktivitas operasional serta menjaga agar alur pekerjaan tetap terorganisir dan berjalan dengan baik.'
+             )">
+
+            <div class="top">
+                <span class="number">06</span>
+                <span class="category">OPERATIONS</span>
+            </div>
+
+            <div class="card-content">
+                <h2>Business Operations</h2>
+
+                <p>
+                    Supporting operational activities and
+                    maintaining organized workflows.
+                </p>
+
+                <span class="detail">Lihat Detail →</span>
+            </div>
+        </div>
+
+
+        <!-- CARD 07 -->
+        <div class="card"
+             onclick="openModal(
+                'gambar7.jpg',
+                'TEAMWORK',
+                'Team Collaboration',
+                'Bekerja sama dengan berbagai orang untuk menyelesaikan tugas dan mencapai tujuan bersama. Gambar menunjukkan dokumentasi kegiatan kolaborasi tim.'
+             )">
+
+            <div class="top">
+                <span class="number">07</span>
+                <span class="category">TEAMWORK</span>
+            </div>
+
+            <div class="card-content">
+                <h2>Team Collaboration</h2>
+
+                <p>
+                    Working collaboratively with different
+                    people to achieve shared goals.
+                </p>
+
+                <span class="detail">Lihat Detail →</span>
+            </div>
+        </div>
+
+
+        <!-- CARD 08 -->
+        <div class="card"
+             onclick="openModal(
+                'gambar8.jpg',
+                'ACADEMIC',
+                'Academic Activities',
+                'Dokumentasi aktivitas akademik seperti tugas, presentasi, kegiatan sekolah, maupun proyek yang berhubungan dengan pembelajaran.'
+             )">
+
+            <div class="top">
+                <span class="number">08</span>
+                <span class="category">ACADEMIC</span>
+            </div>
+
+            <div class="card-content">
+                <h2>Academic Activities</h2>
+
+                <p>
+                    Applying business management knowledge
+                    through academic activities and assignments.
+                </p>
+
+                <span class="detail">Lihat Detail →</span>
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         MODAL
+    ========================= -->
+
+    <div class="modal" id="detailModal">
+
+        <div class="modal-box">
+
+            <button class="close" onclick="closeModal()">×</button>
+
+            <img
+                id="modalImage"
+                class="modal-image"
+                src=""
+                alt="Dokumentasi">
+
+            <div class="modal-content">
+
+                <div id="modalCategory" class="modal-category"></div>
+
+                <h2 id="modalTitle" class="modal-title"></h2>
+
+                <p id="modalDescription" class="modal-description"></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const modal = document.getElementById("detailModal");
+        const modalImage = document.getElementById("modalImage");
+        const modalCategory = document.getElementById("modalCategory");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalDescription = document.getElementById("modalDescription");
+
+
+        function openModal(image, category, title, description) {
+
+            modalImage.src = image;
+            modalImage.alt = title;
+
+            modalCategory.textContent = category;
+            modalTitle.textContent = title;
+            modalDescription.textContent = description;
+
+            modal.classList.add("active");
+
+            document.body.style.overflow = "hidden";
+        }
+
+
+        function closeModal() {
+
+            modal.classList.remove("active");
+
+            document.body.style.overflow = "auto";
+
+            setTimeout(() => {
+                modalImage.src = "";
+            }, 300);
+        }
+
+
+        /* Klik area gelap untuk menutup */
+
+        modal.addEventListener("click", function(event) {
+
+            if (event.target === modal) {
+                closeModal();
+            }
+
+        });
+
+
+        /* Tombol ESC */
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+                closeModal();
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

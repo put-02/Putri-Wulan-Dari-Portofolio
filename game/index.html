@@ -1,0 +1,420 @@
+<!DOCTYPE1 html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warnet Tycoon 2D</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: #121214;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Top Stats Bar */
+    #header {
+      background: #1e1e24;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #33333d;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .stat-box {
+      font-size: 1.1rem;
+      font-weight: bold;
+      display: flex;
+      gap: 20px;
+    }
+
+    .stat-item span {
+      color: #00ff88;
+    }
+
+    /* Main Layout */
+    #game-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+    }
+
+    /* Isometric/Top-Down Room Canvas Area */
+    #room-view {
+      flex: 1;
+      background-color: #2a2a36;
+      background-image: 
+        radial-gradient(#383848 15%, transparent 16%),
+        radial-gradient(#383848 15%, transparent 16%);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+      position: relative;
+      overflow: auto;
+      display: grid;
+      grid-template-columns: repeat(6, 110px);
+      grid-template-rows: repeat(4, 110px);
+      gap: 15px;
+      padding: 30px;
+      align-content: start;
+      justify-content: start;
+    }
+
+    /* Grid Slot Warnet */
+    .slot {
+      border: 2px dashed #444458;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .slot:hover {
+      border-color: #00ff88;
+      background: rgba(0, 255, 136, 0.05);
+    }
+
+    .slot-label {
+      font-size: 0.75rem;
+      color: #777788;
+      position: absolute;
+      top: 6px;
+      left: 8px;
+    }
+
+    /* Visual Barang di Slot */
+    .placed-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .item-icon {
+      font-size: 2rem;
+      margin-bottom: 4px;
+    }
+
+    .item-name {
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #555;
+    }
+
+    .status-indicator.active {
+      background: #00ff88;
+      box-shadow: 0 0 8px #00ff88;
+    }
+
+    /* Sidebar Shop */
+    #shop-sidebar {
+      width: 320px;
+      background: #18181c;
+      border-left: 2px solid #33333d;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #shop-sidebar h2 {
+      font-size: 1.2rem;
+      color: #fff;
+      border-bottom: 1px solid #33333d;
+      padding-bottom: 10px;
+    }
+
+    .shop-item {
+      background: #22222a;
+      border: 1px solid #33333d;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.1s, border-color 0.2s;
+    }
+
+    .shop-item:hover {
+      border-color: #00e5ff;
+      transform: translateY(-2px);
+    }
+
+    .shop-info h3 {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .shop-info p {
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+
+    .btn-buy {
+      background: linear-gradient(135deg, #00e5ff, #0088ff);
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-buy:hover {
+      opacity: 0.9;
+    }
+
+    .btn-buy:disabled {
+      background: #444;
+      cursor: not-allowed;
+    }
+
+    /* Log Box */
+    #log-box {
+      margin-top: auto;
+      background: #121214;
+      border: 1px solid #2a2a36;
+      border-radius: 6px;
+      padding: 10px;
+      height: 120px;
+      overflow-y: auto;
+      font-size: 0.75rem;
+      color: #888899;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .log-entry {
+      margin-bottom: 4px;
+    }
+    .log-entry.success { color: #00ff88; }
+    .log-entry.info { color: #00e5ff; }
+  </style>
+</head>
+<body>
+
+  <!-- Header Stats -->
+  <div id="header">
+    <div style="font-weight: bold; font-size: 1.2rem; color: #00e5ff;">🎮 WARNET TYCOON</div>
+    <div class="stat-box">
+      <div class="stat-item">Kas: <span id="money-display">Rp 5.000.000</span></div>
+      <div class="stat-item">Pelanggan: <span id="customer-display" style="color: #00e5ff;">0</span></div>
+    </div>
+  </div>
+
+  <!-- Game Main View -->
+  <div id="game-container">
+    
+    <!-- Area Ruangan Warnet -->
+    <div id="room-view">
+      <!-- Slot grid dipasang otomatis via JS -->
+    </div>
+
+    <!-- Toko & Kontrol -->
+    <div id="shop-sidebar">
+      <h2>🛒 Toko Perabotan</h2>
+      
+      <div class="shop-item">
+        <div class="shop-info">
+          <h3>PC Paket Hemat</h3>
+          <p>Hasil: Rp 25.000/detik</p>
+          <p style="color: #00ff88; font-weight: bold; margin-top: 2px;">Rp 1.500.000</p>
+        </div>
+        <button class="btn-buy" onclick="selectItemToBuy('pc_low')">Beli</button>
+      </div>
+
+      <div class="shop-item">
+        <div class="shop-info">
+          <h3>PC Gaming Sultan</h3>
+          <p>Hasil: Rp 80.000/detik</p>
+          <p style="color: #00ff88; font-weight: bold; margin-top: 2px;">Rp 4.000.000</p>
+        </div>
+        <button class="btn-buy" onclick="selectItemToBuy('pc_high')">Beli</button>
+      </div>
+
+      <div class="shop-item">
+        <div class="shop-info">
+          <h3>Kipas / AC Ruangan</h3>
+          <p>Bonus Pendapatan +15%</p>
+          <p style="color: #00ff88; font-weight: bold; margin-top: 2px;">Rp 2.000.000</p>
+        </div>
+        <button class="btn-buy" onclick="selectItemToBuy('ac')">Beli</button>
+      </div>
+
+      <div id="log-box">
+        <div class="log-entry info">Selamat datang di Warnet Tycoon! Pilih barang di toko lalu klik slot kosong.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // State Game
+    let money = 5000000;
+    let selectedItemKey = null;
+    let multiplier = 1.0;
+    const TOTAL_SLOTS = 24;
+
+    // Data Item Catalog
+    const ITEM_TYPES = {
+      pc_low: { name: 'PC Hemat', price: 1500000, income: 25000, icon: '🖥️' },
+      pc_high: { name: 'PC Gaming', price: 4000000, income: 80000, icon: '🖥️✨' },
+      ac: { name: 'AC Ruangan', price: 2000000, income: 0, icon: '❄️', isBuff: true }
+    };
+
+    // State Grid Slot Warnet
+    const slots = Array(TOTAL_SLOTS).fill(null);
+
+    // Format Rupiah
+    function formatRupiah(amount) {
+      return 'Rp ' + amount.toLocaleString('id-ID');
+    }
+
+    // Inisialisasi Grid UI
+    function initGrid() {
+      const roomContainer = document.getElementById('room-view');
+      roomContainer.innerHTML = '';
+
+      for (let i = 0; i < TOTAL_SLOTS; i++) {
+        const slotEl = document.createElement('div');
+        slotEl.className = 'slot';
+        slotEl.onclick = () => placeItemInSlot(i);
+
+        const label = document.createElement('span');
+        label.className = 'slot-label';
+        label.innerText = `S-${i+1}`;
+        slotEl.appendChild(label);
+
+        if (slots[i]) {
+          const item = slots[i];
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'placed-item';
+          itemDiv.innerHTML = `
+            <div class="item-icon">${item.icon}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="status-indicator ${item.active ? 'active' : ''}"></div>
+          `;
+          slotEl.appendChild(itemDiv);
+        }
+
+        roomContainer.appendChild(slotEl);
+      }
+    }
+
+    // Pilih Barang dari Toko
+    function selectItemToBuy(key) {
+      const item = ITEM_TYPES[key];
+      if (money < item.price) {
+        addLog('Uang kamu tidak cukup untuk membeli ' + item.name + '!', 'error');
+        return;
+      }
+      selectedItemKey = key;
+      addLog(`Pilih slot kosong di ruangan untuk memasang ${item.name}.`, 'info');
+    }
+
+    // Pasang Barang ke Slot
+    function placeItemInSlot(index) {
+      if (!selectedItemKey) {
+        addLog('Pilih barang dari toko terlebih dahulu!', 'error');
+        return;
+      }
+
+      if (slots[index] !== null) {
+        addLog('Slot ini sudah terisi!', 'error');
+        return;
+      }
+
+      const itemData = ITEM_TYPES[selectedItemKey];
+
+      if (money >= itemData.price) {
+        money -= itemData.price;
+        slots[index] = { ...itemData, active: true };
+        
+        if (itemData.isBuff) {
+          multiplier += 0.15; // Tambah bonus pendapatan jika beli AC
+        }
+
+        addLog(`Berhasil memasang ${itemData.name} di Slot ${index + 1}!`, 'success');
+        selectedItemKey = null; // Reset seleksi
+        updateUI();
+        initGrid();
+      }
+    }
+
+    // Game Loop (Pendapatan & Simulasi Pelanggan)
+    setInterval(() => {
+      let incomeTick = 0;
+      let activePCs = 0;
+
+      slots.forEach(slot => {
+        if (slot && slot.income > 0) {
+          // Simulasi random apakah PC sedang disewa pelanggan
+          const isOccupied = Math.random() > 0.3;
+          slot.active = isOccupied;
+
+          if (isOccupied) {
+            incomeTick += slot.income;
+            activePCs++;
+          }
+        }
+      });
+
+      // Kalkulasi total dengan multiplier
+      const totalIncome = Math.floor(incomeTick * multiplier);
+      money += totalIncome;
+
+      document.getElementById('customer-display').innerText = activePCs;
+      updateUI();
+      initGrid(); // Refresh indikator status aktif
+    }, 2000);
+
+    // Update Status UI
+    function updateUI() {
+      document.getElementById('money-display').innerText = formatRupiah(money);
+    }
+
+    // Tambah Log Catatan
+    function addLog(text, type = '') {
+      const logBox = document.getElementById('log-box');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.innerText = `> ${text}`;
+      logBox.prepend(entry);
+    }
+
+    // Start Game
+    initGrid();
+    updateUI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+/* Reset Basic */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif, system-ui;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #0f172a;
+    color: #f8fafc;
+    overflow-x: hidden;
+}
+
+/* Navbar Sticky dengan Glassmorphism */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.2rem 2rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.logo span {
+    color: #38bdf8;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #38bdf8;
+}
+
+/* Hero Section */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 2rem 2rem 2rem;
+    gap: 2rem;
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.hero-content h1 span {
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text; /* Untuk browser basis Webkit (Chrome, Safari, Edge) */
+    background-clip: text;         /* Standar W3C (Firefox dan browser modern lain) */
+    -webkit-text-fill-color: transparent;
+    color: transparent;            /* Fallback cadangan */
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    margin-bottom: 2rem;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Style Tombol */
+.btn {
+    padding: 0.8rem 1.8rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn.primary {
+    background: linear-gradient(90deg, #38bdf8, #6366f1);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+}
+
+.btn.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+}
+
+.btn.secondary {
+    border: 2px solid #38bdf8;
+    color: #38bdf8;
+}
+
+.btn.secondary:hover {
+    background: rgba(56, 189, 248, 0.1);
+    transform: translateY(-3px);
+}
+
+/* Hero Image & Animasi Melayang (Floating) */
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-image img {
+    width: 100%;
+    max-width: 450px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.floating {
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Section Umum */
+.section-padding {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 3rem;
+}
+
+/* Features Section */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: #1e293b;
+    padding: 2.5rem 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    border-color: #38bdf8;
+}
+
+.feature-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    margin-bottom: 0.8rem;
+}
+
+.feature-card p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+/* Gallery Section */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 250px;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-item .overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .overlay {
+    opacity: 1;
+}
+
+.gallery-item .overlay span {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #38bdf8;
+}
+
+/* Footer Section */
+footer {
+    background: #020617;
+    padding: 4rem 2rem 1rem 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.footer-content p {
+    color: #94a3b8;
+    margin-bottom: 2rem;
+}
+
+.copyright {
+    margin-top: 4rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* Animasi Scroll Reveal (JS Class) */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive Tablet & Mobile */
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 8rem;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .nav-links {
+        display: none; /* Bisa tambahkan hamburger menu jika ingin ditingkatkan */
+    }
+}

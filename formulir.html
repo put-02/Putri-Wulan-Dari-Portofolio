@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Pendaftaran | Fahat Riski</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #fcf6e8; /* Warna latar krem/parchment */
+            margin: 0;
+            padding: 20px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 6px;
+            vertical-align: top;
+        }
+
+        .label-cell {
+            width: 150px;
+        }
+
+        .separator-cell {
+            width: 20px;
+            text-align: center;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="text"].pass-input, /* Ditambahkan agar gaya text input sama saat di-toggle */
+        input[type="date"],
+        select,
+        textarea {
+            width: 250px;
+            padding: 3px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* --- CSS BARU UNTUK FITUR MATA --- */
+        .password-wrapper {
+            position: relative;
+            width: 250px; /* Samakan dengan lebar input */
+            display: inline-block;
+        }
+
+        .password-wrapper input {
+            width: 100% !important; /* Memaksa input memenuhi wrapper */
+            padding-right: 30px; /* Beri ruang di kanan agar teks tidak tertutup ikon */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+            font-size: 14px;
+        }
+        /* --------------------------------- */
+
+        textarea {
+            width: 350px;
+            height: 100px;
+            resize: none;
+        }
+
+        .hobby-container {
+            display: grid;
+            grid-template-columns: repeat(3, auto);
+            gap: 5px 15px;
+            width: max-content;
+        }
+
+        .hobby-item {
+            display: flex;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .hobby-item input {
+            margin-right: 5px;
+        }
+
+        .radio-group {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .buttons {
+            padding-top: 15px;
+        }
+
+        .btn {
+            padding: 2px 10px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Formulir Pendaftaran | Fahat Riski</h2>
+
+    <form action="#" method="POST" enctype="multipart/form-data">
+        <table>
+            <!-- Nama -->
+            <tr>
+                <td class="label-cell">Nama</td>
+                <td class="separator-cell">:</td>
+                <td><input type="text" name="nama" placeholder="Nama..."></td>
+            </tr>
+            <!-- Email -->
+            <tr>
+                <td>Email</td>
+                <td>:</td>
+                <td><input type="email" name="email" placeholder="Email..."></td>
+            </tr>
+            <!-- Password (BAGIAN YANG DIUBAH) -->
+            <tr>
+                <td>Password</td>
+                <td>:</td>
+                <td>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="password" placeholder="Password...">
+                        <span id="eyeIcon" class="toggle-password">👁️</span>
+                    </div>
+                </td>
+            </tr>
+            <!-- Tanggal Lahir -->
+            <tr>
+                <td>Tanggal Lahir</td>
+                <td>:</td>
+                <td><input type="date" name="tanggal_lahir"></td>
+            </tr>
+            <!-- Jenis Kelamin -->
+            <tr>
+                <td>Jenis Kelamin</td>
+                <td>:</td>
+                <td class="radio-group">
+                    <label><input type="radio" name="jenis_kelamin" value="Laki-Laki"> Laki-Laki</label><br>
+                    <label><input type="radio" name="jenis_kelamin" value="Perempuan"> Perempuan</label>
+                </td>
+            </tr>
+            <!-- Jurusan -->
+            <tr>
+                <td>Jurusan</td>
+                <td>:</td>
+                <td>
+                    <select name="jurusan">
+                        <option value="RPL">RPL</option>
+                        <option value="TKJ">TKJ</option>
+                        <option value="MM">Multimedia</option>
+                    </select>
+                </td>
+            </tr>
+            <!-- Hobby -->
+            <tr>
+                <td>Hobby</td>
+                <td>:</td>
+                <td>
+                    <div class="hobby-container">
+                        <label class="hobby-item"><input type="checkbox" name="hobby[]" value="Swimming"> Swimming</label>
+                        <label class="hobby-item"><input type="checkbox" name="hobby[]" value="Travelling"> Travelling</label>
+                        <label class="hobby-item"><input type="checkbox" name="hobby[]" value="Cycling"> Cycling</label>
+                        <label class="hobby-item"><input type="checkbox" name="hobby[]" value="Music"> Music</label>
+                        <label class="hobby-item"><input type="checkbox" name="hobby[]" value="Adventuring"> Adventuring</label>
+                        <label class="hobby-item"><input type="checkbox" name="hobby[]" value="Lainnya"> Lainnya...</label>
+                    </div>
+                </td>
+            </tr>
+            <!-- Alamat -->
+            <tr>
+                <td>Alamat</td>
+                <td>:</td>
+                <td><textarea name="alamat"></textarea></td>
+            </tr>
+            <!-- Foto -->
+            <tr>
+                <td>Foto</td>
+                <td>:</td>
+                <td><input type="file" name="foto"></td>
+            </tr>
+            <!-- Tombol -->
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="buttons">
+                    <button type="submit" class="btn">kirim</button>
+                    <button type="reset" class="btn">batal</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <footer>
+        &copy; Fahat riski
+    </footer>
+</div>
+
+<!-- JAVASCRIPT BARU UNTUK LOGIKA MATA -->
+<script>
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    eyeIcon.addEventListener('click', function () {
+        // Cek tipe input saat ini, jika password ubah ke text, dan sebaliknya
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        
+        // Opsional: Tambahkan class khusus saat modifikasi type agar CSS text input tetap konsisten
+        if (isPassword) {
+            passwordInput.classList.add('pass-input');
+        } else {
+            passwordInput.classList.remove('pass-input');
+        }
+
+        // Ubah emoji mata terbuka (👁️) menjadi mata tertutup (🙈)
+        this.textContent = isPassword ? '🙈' : '👁️';
+    });
+</script>
+
+</body>
+</html>

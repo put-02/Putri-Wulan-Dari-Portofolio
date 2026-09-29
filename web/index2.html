@@ -1,0 +1,3195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DRAGON EGG HEIST</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    user-select:none;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#05070d;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+#ui{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    color:white;
+}
+
+/* TOP */
+
+.top{
+    position:absolute;
+    top:18px;
+    left:20px;
+    right:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:1000;
+    letter-spacing:5px;
+    text-shadow:
+        0 0 10px #ff713b,
+        0 0 30px #ff2d00;
+}
+
+.sub{
+    color:#7d8798;
+    font-size:9px;
+    letter-spacing:3px;
+    margin-top:5px;
+}
+
+.money{
+    min-width:210px;
+    padding:12px 18px;
+    border:1px solid #ffffff1c;
+    background:#080d16dd;
+    backdrop-filter:blur(15px);
+    border-radius:13px;
+    box-shadow:0 10px 35px #0008;
+}
+
+.moneyValue{
+    color:#ffd65c;
+    font-size:23px;
+    font-weight:900;
+}
+
+.gold{
+    color:#8693a6;
+    font-size:10px;
+    margin-top:3px;
+}
+
+/* LEFT HUD */
+
+.stats{
+    position:absolute;
+    top:92px;
+    left:20px;
+    width:230px;
+    padding:15px;
+    background:#080d16d9;
+    border:1px solid #ffffff15;
+    border-radius:14px;
+    backdrop-filter:blur(15px);
+}
+
+.row{
+    margin-bottom:12px;
+}
+
+.row:last-child{
+    margin-bottom:0;
+}
+
+.label{
+    color:#7c899c;
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+.value{
+    margin-top:4px;
+    font-size:17px;
+    font-weight:bold;
+}
+
+.bar{
+    width:100%;
+    height:7px;
+    margin-top:6px;
+    background:#202936;
+    overflow:hidden;
+    border-radius:10px;
+}
+
+.bar div{
+    height:100%;
+    width:100%;
+    border-radius:10px;
+    transition:.15s;
+}
+
+#hpBar{
+    background:linear-gradient(90deg,#ff334f,#ff8b4d);
+}
+
+#staminaBar{
+    background:linear-gradient(90deg,#36d9ff,#657bff);
+}
+
+#dangerBar{
+    background:linear-gradient(90deg,#ffca3a,#ff315c);
+}
+
+/* ZONE PANEL */
+
+.zones{
+    position:absolute;
+    right:20px;
+    top:92px;
+    width:245px;
+    max-height:390px;
+    overflow:auto;
+    padding:13px;
+    border-radius:14px;
+    background:#080d16e8;
+    border:1px solid #ffffff15;
+    backdrop-filter:blur(15px);
+    pointer-events:auto;
+}
+
+.zones::-webkit-scrollbar{
+    width:3px;
+}
+
+.zoneTitle{
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:3px;
+    margin-bottom:9px;
+}
+
+.zone{
+    padding:10px;
+    margin-bottom:7px;
+    border-radius:10px;
+    background:#121b28;
+    border:1px solid #ffffff0c;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.zone:hover{
+    transform:translateX(-4px);
+    border-color:#ff7b4d;
+}
+
+.zone.active{
+    border-color:#ff743f;
+    box-shadow:0 0 20px #ff4c241f;
+}
+
+.zone.locked{
+    opacity:.35;
+}
+
+.zoneName{
+    font-size:12px;
+    font-weight:bold;
+}
+
+.zoneInfo{
+    color:#7d8ca0;
+    font-size:9px;
+    margin-top:4px;
+}
+
+/* BOTTOM */
+
+.bottom{
+    position:absolute;
+    left:20px;
+    bottom:20px;
+    display:flex;
+    gap:8px;
+}
+
+.button{
+    pointer-events:auto;
+    border:1px solid #ffffff19;
+    background:#0b111bdd;
+    color:white;
+    padding:11px 15px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.2s;
+    font-weight:bold;
+    font-size:10px;
+    letter-spacing:1px;
+}
+
+.button:hover{
+    transform:translateY(-3px);
+    border-color:#ff754b;
+    box-shadow:0 8px 25px #ff4d2a22;
+}
+
+/* UPGRADE */
+
+.upgrade{
+    position:absolute;
+    right:20px;
+    bottom:20px;
+    width:245px;
+    padding:14px;
+    border-radius:14px;
+    background:#080d16e8;
+    border:1px solid #ffffff15;
+    pointer-events:auto;
+}
+
+.upTitle{
+    font-size:10px;
+    color:#ff8c5a;
+    letter-spacing:3px;
+    margin-bottom:10px;
+}
+
+.up{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    border-bottom:1px solid #ffffff09;
+}
+
+.up:last-child{
+    border:0;
+}
+
+.upName{
+    font-size:11px;
+}
+
+.upLevel{
+    color:#7b899a;
+    font-size:9px;
+}
+
+.up button{
+    border:0;
+    color:white;
+    background:#17263a;
+    border:1px solid #31435a;
+    border-radius:6px;
+    padding:6px 8px;
+    cursor:pointer;
+    font-size:9px;
+}
+
+.up button:hover{
+    background:#bd4c2d;
+}
+
+/* NOTIFY */
+
+#notify{
+    position:absolute;
+    top:26px;
+    left:50%;
+    transform:translate(-50%,-30px);
+    opacity:0;
+    padding:11px 19px;
+    border-radius:30px;
+    background:#090f18ee;
+    border:1px solid #ffffff22;
+    box-shadow:0 8px 35px #0008;
+    transition:.35s;
+}
+
+#notify.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+/* INTRO */
+
+#intro{
+    position:fixed;
+    inset:0;
+    z-index:20;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+        radial-gradient(circle at 50% 40%,#3c180d,#08090f 65%);
+    transition:.8s;
+}
+
+#intro.hide{
+    opacity:0;
+    pointer-events:none;
+}
+
+.intro{
+    text-align:center;
+}
+
+.dragonIcon{
+    font-size:70px;
+    filter:drop-shadow(0 0 30px #ff5528);
+    animation:float 2s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-12px)}
+}
+
+.title{
+    margin-top:5px;
+    font-size:clamp(42px,8vw,92px);
+    font-weight:1000;
+    letter-spacing:9px;
+    text-shadow:
+        0 0 10px #ff6336,
+        0 0 35px #ff2e00;
+}
+
+.intro p{
+    color:#8e99aa;
+    letter-spacing:5px;
+    font-size:10px;
+    margin-top:8px;
+}
+
+.start{
+    margin-top:35px;
+    padding:15px 48px;
+    color:white;
+    background:#42190f;
+    border:1px solid #ff6940;
+    border-radius:9px;
+    cursor:pointer;
+    letter-spacing:4px;
+    font-weight:bold;
+    transition:.25s;
+}
+
+.start:hover{
+    transform:scale(1.08);
+    background:#8e3019;
+    box-shadow:0 0 40px #ff4b2c77;
+}
+
+/* DEATH */
+
+#death{
+    position:fixed;
+    inset:0;
+    z-index:30;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#03040acc;
+    backdrop-filter:blur(8px);
+    opacity:0;
+    visibility:hidden;
+    transition:.4s;
+}
+
+#death.show{
+    opacity:1;
+    visibility:visible;
+}
+
+.deathBox{
+    width:390px;
+    max-width:90%;
+    text-align:center;
+    padding:40px;
+    background:#090d16f2;
+    border:1px solid #ff334f66;
+    border-radius:18px;
+    box-shadow:0 0 70px #ff003322;
+}
+
+.deathTitle{
+    color:#ff5266;
+    font-size:34px;
+    font-weight:1000;
+    letter-spacing:5px;
+}
+
+.deathInfo{
+    color:#8b96a8;
+    margin:15px 0 25px;
+    line-height:1.8;
+    font-size:12px;
+}
+
+.restart{
+    border:1px solid #ff6545;
+    background:#3b170f;
+    color:white;
+    padding:12px 30px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* EGG POPUP */
+
+#eggPopup{
+    position:absolute;
+    left:50%;
+    bottom:100px;
+    transform:translateX(-50%) translateY(20px);
+    opacity:0;
+    padding:12px 20px;
+    background:#09101bee;
+    border:1px solid #ffca58;
+    border-radius:30px;
+    transition:.3s;
+    pointer-events:none;
+}
+
+#eggPopup.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+/* MOBILE */
+
+@media(max-width:850px){
+
+    .zones{
+        width:190px;
+    }
+
+    .stats{
+        width:190px;
+    }
+
+    .upgrade{
+        display:none;
+    }
+
+    .money{
+        min-width:150px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<!-- INTRO -->
+
+<div id="intro">
+    <div class="intro">
+        <div class="dragonIcon">🐉</div>
+        <div class="title">DRAGON HEIST</div>
+        <p>STEAL THE EGGS • DEFEAT THE GUARDIANS • BECOME LEGENDARY</p>
+        <button class="start" onclick="startGame()">ENTER THE REALM</button>
+    </div>
+</div>
+
+<!-- DEATH -->
+
+<div id="death">
+    <div class="deathBox">
+        <div class="deathTitle">DRAGON DOWN</div>
+
+        <div class="deathInfo">
+            Guardian berhasil menghentikanmu.<br>
+            Telur yang belum dibawa pulang hilang.
+            <br><br>
+            GOLD YANG TERKUMPUL:
+            <strong id="deathGold">0</strong>
+        </div>
+
+        <button class="restart" onclick="respawn()">
+            RETURN TO NEST
+        </button>
+    </div>
+</div>
+
+<div id="ui">
+
+    <div class="top">
+
+        <div>
+            <div class="logo">DRAGON HEIST</div>
+            <div class="sub">
+                THE EGG THIEF CHRONICLES
+            </div>
+        </div>
+
+        <div class="money">
+            <div class="moneyValue" id="gold">$2,000</div>
+            <div class="gold">
+                TREASURE • <span id="eggs">0</span> EGGS
+            </div>
+        </div>
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+        <div class="row">
+            <div class="label">DRAGON HP</div>
+            <div class="value" id="hpText">100 / 100</div>
+            <div class="bar">
+                <div id="hpBar"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">FLIGHT STAMINA</div>
+            <div class="value" id="staminaText">100%</div>
+            <div class="bar">
+                <div id="staminaBar"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">GUARDIAN ALERT</div>
+            <div class="value" id="dangerText">LOW</div>
+            <div class="bar">
+                <div id="dangerBar"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">CURRENT REGION</div>
+            <div class="value" id="regionText">
+                DRAGON NEST
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ZONES -->
+
+    <div class="zones">
+
+        <div class="zoneTitle">
+            REALMS
+        </div>
+
+        <div class="zone active"
+             onclick="travel(0)">
+            <div class="zoneName">🏠 Dragon Nest</div>
+            <div class="zoneInfo">
+                Safe zone • Your base
+            </div>
+        </div>
+
+        <div class="zone"
+             id="zone1"
+             onclick="travel(1)">
+            <div class="zoneName">🌲 Emerald Forest</div>
+            <div class="zoneInfo">
+                Common eggs • 2 Guardians
+            </div>
+        </div>
+
+        <div class="zone"
+             id="zone2"
+             onclick="travel(2)">
+            <div class="zoneName">🔥 Ash Volcano</div>
+            <div class="zoneInfo">
+                Fire eggs • 4 Guardians
+            </div>
+        </div>
+
+        <div class="zone"
+             id="zone3"
+             onclick="travel(3)">
+            <div class="zoneName">❄️ Frost Kingdom</div>
+            <div class="zoneInfo">
+                Ice eggs • 5 Guardians
+            </div>
+        </div>
+
+        <div class="zone"
+             id="zone4"
+             onclick="travel(4)">
+            <div class="zoneName">🌌 Star Valley</div>
+            <div class="zoneInfo">
+                Cosmic eggs • 6 Guardians
+            </div>
+        </div>
+
+        <div class="zone"
+             id="zone5"
+             onclick="travel(5)">
+            <div class="zoneName">☠️ Shadow Marsh</div>
+            <div class="zoneInfo">
+                Dark eggs • 7 Guardians
+            </div>
+        </div>
+
+        <div class="zone"
+             id="zone6"
+             onclick="travel(6)">
+            <div class="zoneName">⚡ Storm Peaks</div>
+            <div class="zoneInfo">
+                Storm eggs • 9 Guardians
+            </div>
+        </div>
+
+        <div class="zone"
+             id="zone7"
+             onclick="travel(7)">
+            <div class="zoneName">👑 Ancient Realm</div>
+            <div class="zoneInfo">
+                Ancient eggs • 12 Guardians
+            </div>
+        </div>
+
+    </div>
+
+    <!-- UPGRADE -->
+
+    <div class="upgrade">
+
+        <div class="upTitle">
+            DRAGON UPGRADES
+        </div>
+
+        <div class="up">
+            <div>
+                <div class="upName">⚡ Flight Speed</div>
+                <div class="upLevel" id="speedLv">
+                    Level 1
+                </div>
+            </div>
+
+            <button onclick="upgrade('speed')">
+                UPGRADE
+            </button>
+        </div>
+
+        <div class="up">
+            <div>
+                <div class="upName">❤️ Dragon Health</div>
+                <div class="upLevel" id="healthLv">
+                    Level 1
+                </div>
+            </div>
+
+            <button onclick="upgrade('health')">
+                UPGRADE
+            </button>
+        </div>
+
+        <div class="up">
+            <div>
+                <div class="upName">🔥 Fire Damage</div>
+                <div class="upLevel" id="fireLv">
+                    Level 1
+                </div>
+            </div>
+
+            <button onclick="upgrade('fire')">
+                UPGRADE
+            </button>
+        </div>
+
+        <div class="up">
+            <div>
+                <div class="upName">🪽 Stamina</div>
+                <div class="upLevel" id="staminaLv">
+                    Level 1
+                </div>
+            </div>
+
+            <button onclick="upgrade('stamina')">
+                UPGRADE
+            </button>
+        </div>
+
+    </div>
+
+    <div class="bottom">
+
+        <button class="button"
+                onclick="fireBreath()">
+            🔥 FIRE
+        </button>
+
+        <button class="button"
+                onclick="dash()">
+            ⚡ DASH
+        </button>
+
+        <button class="button"
+                onclick="saveGame()">
+            💾 SAVE
+        </button>
+
+        <button class="button"
+                onclick="toggleNight()">
+            🌙 TIME
+        </button>
+
+    </div>
+
+    <div id="notify"></div>
+
+    <div id="eggPopup">
+        🥚 EGG STOLEN — RETURN TO BASE!
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+let W=innerWidth;
+let H=innerHeight;
+
+function resize(){
+
+    W=innerWidth;
+    H=innerHeight;
+
+    canvas.width=W*devicePixelRatio;
+    canvas.height=H*devicePixelRatio;
+
+    canvas.style.width=W+"px";
+    canvas.style.height=H+"px";
+
+    ctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+}
+
+resize();
+
+addEventListener("resize",resize);
+
+/* =========================================================
+   WORLD
+========================================================= */
+
+const WORLD_W=3600;
+const WORLD_H=2400;
+
+let running=false;
+let currentZone=0;
+
+let gold=2000;
+let eggs=0;
+
+let time=0;
+let shake=0;
+
+let night=false;
+
+let camera={
+    x:0,
+    y:0
+};
+
+let keys={};
+
+let mouse={
+    x:W/2,
+    y:H/2
+};
+
+let particles=[];
+let fireballs=[];
+let guardians=[];
+let npcs=[];
+let eggsWorld=[];
+let crystals=[];
+let clouds=[];
+
+let stolenEgg=null;
+
+/* =========================================================
+   ZONES
+========================================================= */
+
+const zones=[
+
+    {
+        name:"DRAGON NEST",
+        color:"#3f7f55",
+        egg:"Golden Nest Egg",
+        eggColor:"#ffd34e",
+        value:0,
+        guardians:0,
+        unlock:0
+    },
+
+    {
+        name:"EMERALD FOREST",
+        color:"#226b48",
+        egg:"Emerald Dragon Egg",
+        eggColor:"#58ff9a",
+        value:350,
+        guardians:2,
+        unlock:0
+    },
+
+    {
+        name:"ASH VOLCANO",
+        color:"#682b22",
+        egg:"Inferno Egg",
+        eggColor:"#ff5b32",
+        value:750,
+        guardians:4,
+        unlock:2
+    },
+
+    {
+        name:"FROST KINGDOM",
+        color:"#315c83",
+        egg:"Frost Dragon Egg",
+        eggColor:"#7eeaff",
+        value:1200,
+        guardians:5,
+        unlock:4
+    },
+
+    {
+        name:"STAR VALLEY",
+        color:"#362a72",
+        egg:"Cosmic Egg",
+        eggColor:"#c77dff",
+        value:2200,
+        guardians:6,
+        unlock:6
+    },
+
+    {
+        name:"SHADOW MARSH",
+        color:"#273b36",
+        egg:"Shadow Egg",
+        eggColor:"#9b68ff",
+        value:4000,
+        guardians:7,
+        unlock:8
+    },
+
+    {
+        name:"STORM PEAKS",
+        color:"#284b62",
+        egg:"Thunder Egg",
+        eggColor:"#ffff6b",
+        value:7000,
+        guardians:9,
+        unlock:10
+    },
+
+    {
+        name:"ANCIENT REALM",
+        color:"#62462a",
+        egg:"Ancient Dragon Egg",
+        eggColor:"#ffbd54",
+        value:15000,
+        guardians:12,
+        unlock:13
+    }
+
+];
+
+/* =========================================================
+   PLAYER DRAGON
+========================================================= */
+
+let dragon={
+
+    x:1800,
+    y:1200,
+
+    vx:0,
+    vy:0,
+
+    speed:4,
+
+    hp:100,
+    maxHp:100,
+
+    stamina:100,
+    maxStamina:100,
+
+    fireDamage:25,
+
+    speedLevel:1,
+    healthLevel:1,
+    fireLevel:1,
+    staminaLevel:1,
+
+    angle:0,
+
+    attackCooldown:0,
+
+    dashCooldown:0,
+
+    invincible:0,
+
+    wing:0
+
+};
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+addEventListener("keydown",e=>{
+
+    keys[e.key.toLowerCase()]=true;
+
+    if(e.code==="Space"){
+        e.preventDefault();
+        dash();
+    }
+
+    if(e.key.toLowerCase()==="f"){
+        fireBreath();
+    }
+
+});
+
+addEventListener("keyup",e=>{
+    keys[e.key.toLowerCase()]=false;
+});
+
+canvas.addEventListener("mousemove",e=>{
+
+    mouse.x=e.clientX;
+    mouse.y=e.clientY;
+
+});
+
+/* =========================================================
+   START
+========================================================= */
+
+function startGame(){
+
+    running=true;
+
+    document
+        .getElementById("intro")
+        .classList.add("hide");
+
+    spawnZone(0);
+
+    updateUI();
+
+}
+
+/* =========================================================
+   TRAVEL
+========================================================= */
+
+function travel(id){
+
+    if(id===currentZone)return;
+
+    const z=zones[id];
+
+    if(eggs<z.unlock){
+
+        notify(
+            "Wilayah terkunci! Butuh "+
+            z.unlock+
+            " telur."
+        );
+
+        return;
+    }
+
+    currentZone=id;
+
+    guardians=[];
+    npcs=[];
+    eggsWorld=[];
+    particles=[];
+    stolenEgg=null;
+
+    dragon.x=WORLD_W/2;
+    dragon.y=WORLD_H/2;
+
+    dragon.hp=dragon.maxHp;
+    dragon.stamina=dragon.maxStamina;
+
+    spawnZone(id);
+
+    document.getElementById("regionText")
+        .textContent=z.name;
+
+    notify(
+        "Entering "+z.name
+    );
+
+    updateUI();
+
+}
+
+/* =========================================================
+   SPAWN ZONE
+========================================================= */
+
+function spawnZone(id){
+
+    const z=zones[id];
+
+    guardians=[];
+    npcs=[];
+    eggsWorld=[];
+    crystals=[];
+
+    /* guardians */
+
+    for(let i=0;i<z.guardians;i++){
+
+        const a=Math.random()*Math.PI*2;
+        const r=rand(250,800);
+
+        guardians.push({
+
+            x:WORLD_W/2+
+                Math.cos(a)*r,
+
+            y:WORLD_H/2+
+                Math.sin(a)*r,
+
+            vx:0,
+            vy:0,
+
+            speed:
+                1+
+                id*.12+
+                Math.random()*.7,
+
+            hp:
+                40+
+                id*18,
+
+            maxHp:
+                40+
+                id*18,
+
+            damage:
+                6+
+                id*2,
+
+            radius:
+                23+
+                id,
+
+            state:"patrol",
+
+            targetX:0,
+            targetY:0,
+
+            patrolAngle:Math.random()*6.28,
+
+            color:
+                id===2?"#ff5b36":
+                id===3?"#8ceeff":
+                id===4?"#c477ff":
+                id===5?"#9b65b8":
+                id===6?"#e8f45a":
+                id===7?"#ffb64c":
+                "#e85858"
+
+        });
+
+    }
+
+    /* NPC */
+
+    const npcCount=8+id*3;
+
+    for(let i=0;i<npcCount;i++){
+
+        npcs.push({
+
+            x:rand(150,WORLD_W-150),
+            y:rand(150,WORLD_H-150),
+
+            tx:rand(150,WORLD_W-150),
+            ty:rand(150,WORLD_H-150),
+
+            speed:rand(.3,.8),
+
+            phase:Math.random()*20,
+
+            color:
+                [
+                    "#ff9a9a",
+                    "#8adfff",
+                    "#ffd16b",
+                    "#b991ff",
+                    "#75eea1"
+                ][Math.floor(Math.random()*5)]
+
+        });
+
+    }
+
+    /* egg */
+
+    if(id>0){
+
+        eggsWorld.push({
+
+            x:
+                WORLD_W/2+
+                rand(-650,650),
+
+            y:
+                WORLD_H/2+
+                rand(-450,450),
+
+            radius:28,
+
+            color:z.eggColor,
+
+            name:z.egg,
+
+            value:z.value,
+
+            pulse:Math.random()*10,
+
+            stolen:false
+
+        });
+
+    }
+
+    /* crystals */
+
+    for(let i=0;i<25;i++){
+
+        crystals.push({
+
+            x:rand(80,WORLD_W-80),
+            y:rand(80,WORLD_H-80),
+
+            size:rand(5,14),
+
+            color:
+                z.eggColor
+
+        });
+
+    }
+
+}
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function update(){
+
+    if(!running)return;
+
+    time++;
+
+    updateDragon();
+    updateGuardians();
+    updateNPC();
+    updateFireballs();
+    updateParticles();
+
+    updateCamera();
+
+    if(dragon.attackCooldown>0)
+        dragon.attackCooldown--;
+
+    if(dragon.dashCooldown>0)
+        dragon.dashCooldown--;
+
+    if(dragon.invincible>0)
+        dragon.invincible--;
+
+    if(shake>0){
+        shake*=.88;
+        if(shake<.1)shake=0;
+    }
+
+}
+
+/* =========================================================
+   DRAGON MOVEMENT
+========================================================= */
+
+function updateDragon(){
+
+    let dx=0;
+    let dy=0;
+
+    if(keys["w"]||keys["arrowup"])dy--;
+    if(keys["s"]||keys["arrowdown"])dy++;
+    if(keys["a"]||keys["arrowleft"])dx--;
+    if(keys["d"]||keys["arrowright"])dx++;
+
+    const moving=dx||dy;
+
+    if(moving){
+
+        const len=Math.hypot(dx,dy);
+
+        dx/=len;
+        dy/=len;
+
+        dragon.vx+=dx*.5;
+        dragon.vy+=dy*.5;
+
+        dragon.angle=Math.atan2(dy,dx);
+
+        if(dragon.stamina>0)
+            dragon.stamina-=.08;
+
+    }else{
+
+        dragon.vx*=.88;
+        dragon.vy*=.88;
+
+        dragon.stamina+=.18;
+
+    }
+
+    dragon.stamina=
+        clamp(
+            dragon.stamina,
+            0,
+            dragon.maxStamina
+        );
+
+    const maxSpeed=
+        dragon.speed*
+        (dragon.stamina<=0?.45:1);
+
+    const velocity=Math.hypot(
+        dragon.vx,
+        dragon.vy
+    );
+
+    if(velocity>maxSpeed){
+
+        dragon.vx=
+            dragon.vx/velocity*maxSpeed;
+
+        dragon.vy=
+            dragon.vy/velocity*maxSpeed;
+
+    }
+
+    dragon.x+=dragon.vx;
+    dragon.y+=dragon.vy;
+
+    dragon.x=clamp(
+        dragon.x,
+        70,
+        WORLD_W-70
+    );
+
+    dragon.y=clamp(
+        dragon.y,
+        70,
+        WORLD_H-70
+    );
+
+    dragon.wing+=.18;
+
+    /* egg pickup */
+
+    if(!stolenEgg){
+
+        for(const e of eggsWorld){
+
+            const d=distance(
+                dragon,
+                e
+            );
+
+            if(d<60){
+
+                stealEgg(e);
+
+                break;
+
+            }
+
+        }
+
+    }
+
+    /* base delivery */
+
+    if(
+        currentZone===0 &&
+        stolenEgg &&
+        dragon.x>WORLD_W/2-250 &&
+        dragon.x<WORLD_W/2+250 &&
+        dragon.y>WORLD_H/2-250 &&
+        dragon.y<WORLD_H/2+250
+    ){
+
+        deliverEgg();
+
+    }
+
+}
+
+/* =========================================================
+   STEAL EGG
+========================================================= */
+
+function stealEgg(e){
+
+    if(stolenEgg)return;
+
+    stolenEgg=e;
+
+    e.stolen=true;
+
+    dragon.stamina=
+        Math.max(
+            0,
+            dragon.stamina-25
+        );
+
+    /* alert */
+
+    for(const g of guardians)
+        g.state="chase";
+
+    document
+        .getElementById("eggPopup")
+        .classList.add("show");
+
+    notify(
+        "🥚 "+e.name+
+        " STOLEN! FLY BACK TO BASE!"
+    );
+
+    particleBurst(
+        e.x,
+        e.y,
+        e.color,
+        60
+    );
+
+    shake=8;
+
+}
+
+/* =========================================================
+   DELIVER
+========================================================= */
+
+function deliverEgg(){
+
+    const value=stolenEgg.value;
+
+    gold+=value;
+    eggs++;
+
+    notify(
+        "🏠 EGG DELIVERED! +$"+
+        value.toLocaleString()
+    );
+
+    particleBurst(
+        dragon.x,
+        dragon.y,
+        "#ffd35e",
+        100
+    );
+
+    document
+        .getElementById("eggPopup")
+        .classList.remove("show");
+
+    stolenEgg=null;
+
+    if(currentZone!==0){
+
+        currentZone=0;
+
+    }
+
+    setTimeout(()=>{
+        travel(0);
+    },300);
+
+    saveGame();
+
+    updateUI();
+
+}
+
+/* =========================================================
+   GUARDIANS
+========================================================= */
+
+function updateGuardians(){
+
+    let danger=0;
+
+    for(const g of guardians){
+
+        const d=distance(
+            dragon,
+            g
+        );
+
+        if(stolenEgg){
+
+            g.state="chase";
+
+        }else if(d<300){
+
+            g.state="alert";
+
+        }else{
+
+            g.state="patrol";
+
+        }
+
+        if(g.state==="chase"){
+
+            danger+=
+                Math.max(
+                    0,
+                    100-d/8
+                );
+
+            const a=Math.atan2(
+                dragon.y-g.y,
+                dragon.x-g.x
+            );
+
+            g.vx+=Math.cos(a)*.16;
+            g.vy+=Math.sin(a)*.16;
+
+        }
+
+        else if(g.state==="alert"){
+
+            const a=Math.atan2(
+                dragon.y-g.y,
+                dragon.x-g.x
+            );
+
+            g.vx+=Math.cos(a)*.09;
+            g.vy+=Math.sin(a)*.09;
+
+        }
+
+        else{
+
+            g.patrolAngle+=.01;
+
+            g.targetX=
+                WORLD_W/2+
+                Math.cos(g.patrolAngle)*500;
+
+            g.targetY=
+                WORLD_H/2+
+                Math.sin(g.patrolAngle)*400;
+
+            const a=Math.atan2(
+                g.targetY-g.y,
+                g.targetX-g.x
+            );
+
+            g.vx+=Math.cos(a)*.04;
+            g.vy+=Math.sin(a)*.04;
+
+        }
+
+        g.vx*=.94;
+        g.vy*=.94;
+
+        const max=
+            g.state==="chase"?
+            g.speed*1.6:
+            g.speed;
+
+        const v=Math.hypot(
+            g.vx,
+            g.vy
+        );
+
+        if(v>max){
+
+            g.vx=g.vx/v*max;
+            g.vy=g.vy/v*max;
+
+        }
+
+        g.x+=g.vx;
+        g.y+=g.vy;
+
+        if(
+            d<g.radius+35 &&
+            dragon.invincible<=0
+        ){
+
+            dragon.hp-=g.damage;
+
+            dragon.invincible=20;
+
+            shake=10;
+
+            particleBurst(
+                dragon.x,
+                dragon.y,
+                "#ff3f3f",
+                20
+            );
+
+            if(dragon.hp<=0){
+
+                dragon.hp=0;
+                death();
+
+            }
+
+        }
+
+    }
+
+    danger=clamp(danger,0,100);
+
+    document.getElementById("dangerBar")
+        .style.width=danger+"%";
+
+    document.getElementById("dangerText")
+        .textContent=
+        danger>75?"CRITICAL":
+        danger>45?"HIGH":
+        danger>15?"ALERT":
+        "LOW";
+
+}
+
+/* =========================================================
+   NPC
+========================================================= */
+
+function updateNPC(){
+
+    for(const n of npcs){
+
+        const dx=n.tx-n.x;
+        const dy=n.ty-n.y;
+
+        const d=Math.hypot(dx,dy);
+
+        if(d<15){
+
+            n.tx=rand(100,WORLD_W-100);
+            n.ty=rand(100,WORLD_H-100);
+
+        }else{
+
+            n.x+=dx/d*n.speed;
+            n.y+=dy/d*n.speed;
+
+        }
+
+    }
+
+}
+
+/* =========================================================
+   FIRE
+========================================================= */
+
+function fireBreath(){
+
+    if(!running)return;
+
+    if(dragon.attackCooldown>0)
+        return;
+
+    dragon.attackCooldown=20;
+
+    const range=420;
+
+    const a=dragon.angle;
+
+    fireballs.push({
+
+        x:dragon.x+
+            Math.cos(a)*45,
+
+        y:dragon.y+
+            Math.sin(a)*45,
+
+        vx:Math.cos(a)*10,
+        vy:Math.sin(a)*10,
+
+        life:1,
+
+        damage:dragon.fireDamage
+
+    });
+
+    particleBurst(
+        dragon.x+
+        Math.cos(a)*35,
+        dragon.y+
+        Math.sin(a)*35,
+        "#ff6b32",
+        15
+    );
+
+}
+
+/* =========================================================
+   FIREBALLS
+========================================================= */
+
+function updateFireballs(){
+
+    for(let i=fireballs.length-1;i>=0;i--){
+
+        const f=fireballs[i];
+
+        f.x+=f.vx;
+        f.y+=f.vy;
+
+        f.life-=.02;
+
+        particleBurst(
+            f.x,
+            f.y,
+            "#ff7b3c",
+            1
+        );
+
+        for(const g of guardians){
+
+            if(
+                distance(f,g)<
+                g.radius+18
+            ){
+
+                g.hp-=f.damage;
+
+                particleBurst(
+                    g.x,
+                    g.y,
+                    g.color,
+                    20
+                );
+
+                fireballs.splice(i,1);
+
+                if(g.hp<=0){
+
+                    gold+=
+                        80+
+                        currentZone*50;
+
+                    notify(
+                        "Guardian defeated! +gold"
+                    );
+
+                    g.x=
+                        rand(300,WORLD_W-300);
+
+                    g.y=
+                        rand(300,WORLD_H-300);
+
+                    g.hp=g.maxHp;
+
+                }
+
+                break;
+
+            }
+
+        }
+
+        if(f.life<=0)
+            fireballs.splice(i,1);
+
+    }
+
+}
+
+/* =========================================================
+   DASH
+========================================================= */
+
+function dash(){
+
+    if(
+        !running ||
+        dragon.dashCooldown>0 ||
+        dragon.stamina<25
+    )
+        return;
+
+    dragon.dashCooldown=35;
+    dragon.stamina-=25;
+    dragon.invincible=18;
+
+    const a=dragon.angle;
+
+    dragon.vx=Math.cos(a)*15;
+    dragon.vy=Math.sin(a)*15;
+
+    shake=9;
+
+    particleBurst(
+        dragon.x,
+        dragon.y,
+        "#52dcff",
+        45
+    );
+
+}
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+function updateCamera(){
+
+    camera.x=
+        dragon.x-W/2;
+
+    camera.y=
+        dragon.y-H/2;
+
+    camera.x=clamp(
+        camera.x,
+        0,
+        WORLD_W-W
+    );
+
+    camera.y=clamp(
+        camera.y,
+        0,
+        WORLD_H-H
+    );
+
+}
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+function updateParticles(){
+
+    for(let i=particles.length-1;i>=0;i--){
+
+        const p=particles[i];
+
+        p.x+=p.vx;
+        p.y+=p.vy;
+
+        p.vx*=.97;
+        p.vy*=.97;
+
+        p.life-=.025;
+
+        if(p.life<=0)
+            particles.splice(i,1);
+
+    }
+
+}
+
+/* =========================================================
+   DRAW
+========================================================= */
+
+function draw(){
+
+    ctx.save();
+
+    if(shake>0){
+
+        ctx.translate(
+            rand(-shake,shake),
+            rand(-shake,shake)
+        );
+
+    }
+
+    drawBackground();
+
+    ctx.save();
+
+    ctx.translate(
+        -camera.x,
+        -camera.y
+    );
+
+    drawTerrain();
+    drawCrystals();
+    drawEggs();
+    drawGuardians();
+    drawNPCs();
+    drawFireballs();
+    drawDragon();
+    drawParticles();
+
+    ctx.restore();
+
+    drawNight();
+
+    ctx.restore();
+
+}
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+function drawBackground(){
+
+    const z=zones[currentZone];
+
+    ctx.fillStyle=z.color;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+}
+
+/* =========================================================
+   TERRAIN
+========================================================= */
+
+function drawTerrain(){
+
+    /* grid */
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.035)";
+
+    ctx.lineWidth=1;
+
+    for(
+        let x=0;
+        x<WORLD_W;
+        x+=100
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,WORLD_H);
+
+        ctx.stroke();
+
+    }
+
+    for(
+        let y=0;
+        y<WORLD_H;
+        y+=100
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(0,y);
+        ctx.lineTo(WORLD_W,y);
+
+        ctx.stroke();
+
+    }
+
+    /* central base */
+
+    if(currentZone===0){
+
+        ctx.fillStyle="#18232b";
+
+        ctx.beginPath();
+
+        ctx.roundRect(
+            WORLD_W/2-240,
+            WORLD_H/2-190,
+            480,
+            380,
+            35
+        );
+
+        ctx.fill();
+
+        ctx.strokeStyle="#ff9d52";
+        ctx.lineWidth=3;
+
+        ctx.stroke();
+
+        ctx.fillStyle="#ffb15e";
+
+        ctx.font="bold 25px Arial";
+        ctx.textAlign="center";
+
+        ctx.fillText(
+            "DRAGON NEST",
+            WORLD_W/2,
+            WORLD_H/2-130
+        );
+
+        ctx.font="14px Arial";
+
+        ctx.fillStyle="#8392a4";
+
+        ctx.fillText(
+            "SAFE ZONE",
+            WORLD_W/2,
+            WORLD_H/2-105
+        );
+
+        /* nest */
+
+        ctx.strokeStyle="#a76b35";
+        ctx.lineWidth=18;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            WORLD_W/2,
+            WORLD_H/2+20,
+            80,
+            0,
+            Math.PI*2
+        );
+
+        ctx.stroke();
+
+    }
+
+}
+
+/* =========================================================
+   CRYSTALS
+========================================================= */
+
+function drawCrystals(){
+
+    for(const c of crystals){
+
+        ctx.save();
+
+        ctx.translate(
+            c.x,
+            c.y
+        );
+
+        ctx.rotate(
+            Math.sin(time*.01+c.x)*.2
+        );
+
+        ctx.fillStyle=c.color;
+        ctx.shadowBlur=20;
+        ctx.shadowColor=c.color;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -c.size*2
+        );
+
+        ctx.lineTo(
+            c.size,
+            0
+        );
+
+        ctx.lineTo(
+            0,
+            c.size*2
+        );
+
+        ctx.lineTo(
+            -c.size,
+            0
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.restore();
+
+    }
+
+}
+
+/* =========================================================
+   EGGS
+========================================================= */
+
+function drawEggs(){
+
+    for(const e of eggsWorld){
+
+        if(e.stolen)
+            continue;
+
+        const pulse=
+            Math.sin(
+                time*.08+e.pulse
+            )*5;
+
+        ctx.save();
+
+        ctx.translate(
+            e.x,
+            e.y+pulse
+        );
+
+        ctx.shadowBlur=35;
+        ctx.shadowColor=e.color;
+
+        /* glow */
+
+        ctx.globalAlpha=.18;
+
+        ctx.fillStyle=e.color;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            55,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.globalAlpha=1;
+
+        /* egg */
+
+        ctx.fillStyle=e.color;
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            0,
+            0,
+            25,
+            34,
+            0,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        /* cracks */
+
+        ctx.strokeStyle="#ffffff99";
+        ctx.lineWidth=2;
+
+        ctx.beginPath();
+
+        ctx.moveTo(-7,-18);
+        ctx.lineTo(3,-6);
+        ctx.lineTo(-3,4);
+        ctx.lineTo(8,18);
+
+        ctx.stroke();
+
+        ctx.restore();
+
+        ctx.fillStyle="#fff";
+
+        ctx.font="bold 10px Arial";
+        ctx.textAlign="center";
+
+        ctx.fillText(
+            "EGG",
+            e.x,
+            e.y-50
+        );
+
+    }
+
+}
+
+/* =========================================================
+   GUARDIANS
+========================================================= */
+
+function drawGuardians(){
+
+    for(const g of guardians){
+
+        ctx.save();
+
+        ctx.translate(
+            g.x,
+            g.y
+        );
+
+        const pulse=
+            Math.sin(
+                time*.07+g.x
+            )*3;
+
+        /* shadow */
+
+        ctx.fillStyle="#0005";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            0,
+            28,
+            30,
+            9,
+            0,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        /* aura */
+
+        ctx.globalAlpha=.15;
+
+        ctx.fillStyle=g.color;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            g.radius+15+pulse,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.globalAlpha=1;
+
+        /* body */
+
+        ctx.fillStyle="#161c27";
+        ctx.strokeStyle=g.color;
+        ctx.lineWidth=3;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            g.radius,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+        ctx.stroke();
+
+        /* horns */
+
+        ctx.fillStyle=g.color;
+
+        ctx.beginPath();
+
+        ctx.moveTo(-g.radius*.65,-g.radius*.55);
+        ctx.lineTo(-g.radius*.95,-g.radius*1.3);
+        ctx.lineTo(-g.radius*.2,-g.radius*.7);
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.beginPath();
+
+        ctx.moveTo(g.radius*.65,-g.radius*.55);
+        ctx.lineTo(g.radius*.95,-g.radius*1.3);
+        ctx.lineTo(g.radius*.2,-g.radius*.7);
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        /* eyes */
+
+        ctx.fillStyle="#ffec8c";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            -7,
+            -4,
+            4,
+            0,
+            Math.PI*2
+        );
+
+        ctx.arc(
+            7,
+            -4,
+            4,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        /* hp */
+
+        ctx.fillStyle="#0008";
+
+        ctx.fillRect(
+            -30,
+            -g.radius-14,
+            60,
+            5
+        );
+
+        ctx.fillStyle=g.color;
+
+        ctx.fillRect(
+            -30,
+            -g.radius-14,
+            60*(g.hp/g.maxHp),
+            5
+        );
+
+        ctx.restore();
+
+    }
+
+}
+
+/* =========================================================
+   NPC
+========================================================= */
+
+function drawNPCs(){
+
+    for(const n of npcs){
+
+        const walk=
+            Math.sin(
+                time*.1+n.phase
+            )*3;
+
+        ctx.fillStyle="#0004";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            n.x,
+            n.y+14,
+            8,
+            4,
+            0,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        /* body */
+
+        ctx.fillStyle=n.color;
+
+        ctx.fillRect(
+            n.x-6,
+            n.y-5,
+            12,
+            19
+        );
+
+        /* head */
+
+        ctx.fillStyle="#e8b996";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            n.x,
+            n.y-13,
+            7,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        /* legs */
+
+        ctx.strokeStyle="#202630";
+        ctx.lineWidth=3;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            n.x-3,
+            n.y+14
+        );
+
+        ctx.lineTo(
+            n.x-5,
+            n.y+24+walk
+        );
+
+        ctx.moveTo(
+            n.x+3,
+            n.y+14
+        );
+
+        ctx.lineTo(
+            n.x+5,
+            n.y+24-walk
+        );
+
+        ctx.stroke();
+
+    }
+
+}
+
+/* =========================================================
+   DRAGON
+========================================================= */
+
+function drawDragon(){
+
+    ctx.save();
+
+    ctx.translate(
+        dragon.x,
+        dragon.y
+    );
+
+    ctx.rotate(
+        dragon.angle
+    );
+
+    const wing=
+        Math.sin(dragon.wing)*10;
+
+    /* shadow */
+
+    ctx.fillStyle="#0005";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        32,
+        34,
+        10,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /* aura */
+
+    ctx.globalAlpha=.12;
+
+    ctx.fillStyle="#ff6937";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        0,
+        55,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.globalAlpha=1;
+
+    /* tail */
+
+    ctx.strokeStyle="#9e321e";
+    ctx.lineWidth=11;
+
+    ctx.beginPath();
+
+    ctx.moveTo(-10,10);
+    ctx.quadraticCurveTo(
+        -35,
+        30,
+        -52,
+        3
+    );
+
+    ctx.stroke();
+
+    /* body */
+
+    ctx.fillStyle="#a93d25";
+    ctx.strokeStyle="#ff8b55";
+    ctx.lineWidth=2;
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        5,
+        30,
+        22,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+    ctx.stroke();
+
+    /* left wing */
+
+    ctx.fillStyle="#713021";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -12,
+        -7
+    );
+
+    ctx.lineTo(
+        -55,
+        -40-wing
+    );
+
+    ctx.lineTo(
+        -40,
+        5
+    );
+
+    ctx.lineTo(
+        -12,
+        10
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.stroke();
+
+    /* right wing */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -12,
+        8
+    );
+
+    ctx.lineTo(
+        -55,
+        40+wing
+    );
+
+    ctx.lineTo(
+        -40,
+        8
+    );
+
+    ctx.lineTo(
+        -12,
+        -2
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+    ctx.stroke();
+
+    /* neck */
+
+    ctx.fillStyle="#c65330";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        25,
+        0,
+        17,
+        15,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /* head */
+
+    ctx.fillStyle="#d05a32";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        39,
+        -1,
+        20,
+        16,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /* horns */
+
+    ctx.fillStyle="#f1bd63";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        30,
+        -12
+    );
+
+    ctx.lineTo(
+        27,
+        -30
+    );
+
+    ctx.lineTo(
+        38,
+        -17
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        43,
+        -13
+    );
+
+    ctx.lineTo(
+        49,
+        -30
+    );
+
+    ctx.lineTo(
+        52,
+        -10
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    /* eye */
+
+    ctx.fillStyle="#fff46b";
+    ctx.shadowBlur=15;
+    ctx.shadowColor="#fff000";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        48,
+        -5,
+        4,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /* fire */
+
+    if(
+        dragon.attackCooldown>12
+    ){
+
+        ctx.fillStyle="#ffcc44";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            58,
+            2
+        );
+
+        ctx.lineTo(
+            88,
+            10
+        );
+
+        ctx.lineTo(
+            58,
+            15
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+    }
+
+    ctx.restore();
+
+}
+
+/* =========================================================
+   FIREBALL DRAW
+========================================================= */
+
+function drawFireballs(){
+
+    for(const f of fireballs){
+
+        ctx.save();
+
+        ctx.fillStyle="#ff7037";
+        ctx.shadowBlur=25;
+        ctx.shadowColor="#ff4b22";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            f.x,
+            f.y,
+            9,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+
+    }
+
+}
+
+/* =========================================================
+   PARTICLES DRAW
+========================================================= */
+
+function drawParticles(){
+
+    for(const p of particles){
+
+        ctx.globalAlpha=p.life;
+
+        ctx.fillStyle=p.color;
+
+        ctx.shadowBlur=12;
+        ctx.shadowColor=p.color;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size*p.life,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    }
+
+    ctx.globalAlpha=1;
+
+}
+
+/* =========================================================
+   NIGHT
+========================================================= */
+
+function drawNight(){
+
+    if(!night)
+        return;
+
+    ctx.fillStyle="rgba(5,8,25,.48)";
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    for(let i=0;i<90;i++){
+
+        const x=(i*157)%W;
+        const y=(i*73)%H;
+
+        ctx.fillStyle=
+            "rgba(255,255,255,"+
+            (.3+Math.sin(time*.03+i)*.2)+
+            ")";
+
+        ctx.fillRect(
+            x,
+            y,
+            2,
+            2
+        );
+
+    }
+
+}
+
+/* =========================================================
+   UPGRADE
+========================================================= */
+
+function upgrade(type){
+
+    let level;
+    let cost;
+
+    if(type==="speed"){
+
+        level=dragon.speedLevel;
+        cost=600*level;
+
+    }
+
+    if(type==="health"){
+
+        level=dragon.healthLevel;
+        cost=700*level;
+
+    }
+
+    if(type==="fire"){
+
+        level=dragon.fireLevel;
+        cost=800*level;
+
+    }
+
+    if(type==="stamina"){
+
+        level=dragon.staminaLevel;
+        cost=650*level;
+
+    }
+
+    if(gold<cost){
+
+        notify(
+            "Gold tidak cukup! Butuh $"+
+            cost
+        );
+
+        return;
+
+    }
+
+    gold-=cost;
+
+    if(type==="speed"){
+
+        dragon.speedLevel++;
+        dragon.speed+=.55;
+
+    }
+
+    if(type==="health"){
+
+        dragon.healthLevel++;
+        dragon.maxHp+=25;
+        dragon.hp=dragon.maxHp;
+
+    }
+
+    if(type==="fire"){
+
+        dragon.fireLevel++;
+        dragon.fireDamage+=12;
+
+    }
+
+    if(type==="stamina"){
+
+        dragon.staminaLevel++;
+        dragon.maxStamina+=20;
+        dragon.stamina=dragon.maxStamina;
+
+    }
+
+    particleBurst(
+        dragon.x,
+        dragon.y,
+        "#ffd45a",
+        50
+    );
+
+    notify(
+        "🐉 Dragon upgraded!"
+    );
+
+    saveGame();
+    updateUI();
+
+}
+
+/* =========================================================
+   UI
+========================================================= */
+
+function updateUI(){
+
+    document.getElementById("gold")
+        .textContent=
+        "$"+Math.floor(gold).toLocaleString();
+
+    document.getElementById("eggs")
+        .textContent=eggs;
+
+    document.getElementById("hpText")
+        .textContent=
+        Math.ceil(dragon.hp)+
+        " / "+
+        dragon.maxHp;
+
+    document.getElementById("hpBar")
+        .style.width=
+        (dragon.hp/dragon.maxHp*100)+"%";
+
+    document.getElementById("staminaText")
+        .textContent=
+        Math.ceil(
+            dragon.stamina/
+            dragon.maxStamina*100
+        )+"%";
+
+    document.getElementById("staminaBar")
+        .style.width=
+        (
+            dragon.stamina/
+            dragon.maxStamina*100
+        )+"%";
+
+    document.getElementById("regionText")
+        .textContent=
+        zones[currentZone].name;
+
+    document.getElementById("speedLv")
+        .textContent=
+        "Level "+dragon.speedLevel;
+
+    document.getElementById("healthLv")
+        .textContent=
+        "Level "+dragon.healthLevel;
+
+    document.getElementById("fireLv")
+        .textContent=
+        "Level "+dragon.fireLevel;
+
+    document.getElementById("staminaLv")
+        .textContent=
+        "Level "+dragon.staminaLevel;
+
+    for(let i=1;i<8;i++){
+
+        const el=
+            document.getElementById(
+                "zone"+i
+            );
+
+        if(el){
+
+            if(
+                eggs>=zones[i].unlock
+            ){
+
+                el.classList.remove("locked");
+
+            }else{
+
+                el.classList.add("locked");
+
+            }
+
+        }
+
+    }
+
+}
+
+/* =========================================================
+   DEATH
+========================================================= */
+
+function death(){
+
+    running=false;
+
+    stolenEgg=null;
+
+    document.getElementById("deathGold")
+        .textContent=
+        "$"+gold.toLocaleString();
+
+    document.getElementById("death")
+        .classList.add("show");
+
+}
+
+function respawn(){
+
+    document.getElementById("death")
+        .classList.remove("show");
+
+    currentZone=0;
+
+    dragon.x=WORLD_W/2;
+    dragon.y=WORLD_H/2;
+
+    dragon.hp=dragon.maxHp;
+    dragon.stamina=dragon.maxStamina;
+
+    guardians=[];
+    eggsWorld=[];
+    fireballs=[];
+
+    running=true;
+
+    spawnZone(0);
+
+    notify(
+        "Kembali ke Dragon Nest."
+    );
+
+}
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+let notifyTimer;
+
+function notify(text){
+
+    const el=
+        document.getElementById("notify");
+
+    el.textContent=text;
+
+    el.classList.add("show");
+
+    clearTimeout(notifyTimer);
+
+    notifyTimer=
+        setTimeout(()=>{
+            el.classList.remove("show");
+        },2200);
+
+}
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+function saveGame(){
+
+    localStorage.setItem(
+        "dragonHeistSave",
+        JSON.stringify({
+
+            gold,
+            eggs,
+
+            speedLevel:
+                dragon.speedLevel,
+
+            healthLevel:
+                dragon.healthLevel,
+
+            fireLevel:
+                dragon.fireLevel,
+
+            staminaLevel:
+                dragon.staminaLevel,
+
+            speed:
+                dragon.speed,
+
+            maxHp:
+                dragon.maxHp,
+
+            fireDamage:
+                dragon.fireDamage,
+
+            maxStamina:
+                dragon.maxStamina
+
+        })
+    );
+
+    notify("Game saved 💾");
+
+}
+
+/* =========================================================
+   LOAD
+========================================================= */
+
+function loadGame(){
+
+    const raw=
+        localStorage.getItem(
+            "dragonHeistSave"
+        );
+
+    if(!raw)return;
+
+    try{
+
+        const d=JSON.parse(raw);
+
+        gold=d.gold??2000;
+        eggs=d.eggs??0;
+
+        dragon.speedLevel=
+            d.speedLevel??1;
+
+        dragon.healthLevel=
+            d.healthLevel??1;
+
+        dragon.fireLevel=
+            d.fireLevel??1;
+
+        dragon.staminaLevel=
+            d.staminaLevel??1;
+
+        dragon.speed=
+            d.speed??4;
+
+        dragon.maxHp=
+            d.maxHp??100;
+
+        dragon.hp=dragon.maxHp;
+
+        dragon.fireDamage=
+            d.fireDamage??25;
+
+        dragon.maxStamina=
+            d.maxStamina??100;
+
+        dragon.stamina=
+            dragon.maxStamina;
+
+    }catch(e){}
+
+}
+
+loadGame();
+
+/* =========================================================
+   AUTOSAVE
+========================================================= */
+
+setInterval(()=>{
+
+    if(running)
+        saveGame();
+
+},30000);
+
+/* =========================================================
+   UTIL
+========================================================= */
+
+function rand(a,b){
+
+    return Math.random()*(b-a)+a;
+
+}
+
+function clamp(v,a,b){
+
+    return Math.max(
+        a,
+        Math.min(b,v)
+    );
+
+}
+
+function distance(a,b){
+
+    return Math.hypot(
+        a.x-b.x,
+        a.y-b.y
+    );
+
+}
+
+/* =========================================================
+   LOOP
+========================================================= */
+
+function loop(){
+
+    update();
+    draw();
+
+    requestAnimationFrame(loop);
+
+}
+
+loop();
+
+</script>
+
+</body>
+</html>

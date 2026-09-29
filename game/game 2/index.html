@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warnet Tycoon - Advanced Simulator</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: rgba(23, 32, 51, 0.9);
+            --floor-tile: #1e293b;
+            --floor-border: #334155;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-gold: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 10%, #1e293b 0%, #0b0f19 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Header Stats */
+        header {
+            width: 100%;
+            max-width: 950px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            position: sticky;
+            top: 10px;
+            z-index: 10;
+        }
+
+        .title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            text-align: right;
+        }
+
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        /* Layout Grid Utama */
+        .container {
+            width: 100%;
+            max-width: 950px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* VISUAL LANTAI WARNET */
+        .warnet-floor-container {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .section-header {
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        /* Area Kasir & OP Warnet */
+        .cashier-desk {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .op-character {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .op-avatar {
+            font-size: 2rem;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--accent-purple);
+        }
+
+        /* Desain Lantai Keramik Ubin */
+        .floor-grid {
+            background-color: #0f172a;
+            background-image: 
+                linear-gradient(var(--floor-border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--floor-border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            border-radius: 12px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            min-height: 350px;
+        }
+
+        /* Meja Warnet */
+        .station-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+
+        .station-title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .pc-desk {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .pc-slot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .customer-avatar {
+            font-size: 1.6rem;
+            height: 30px;
+            transition: transform 0.2s;
+        }
+
+        .pc-slot.active .customer-avatar {
+            animation: bounce 0.6s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-3px); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+        }
+
+        /* KASIR & SISTEM KEMBALIAN */
+        .cashier-panel {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .change-btn-group {
+            display: flex;
+            gap: 5px;
+            margin-top: 4px;
+        }
+
+        .btn-change {
+            flex: 1;
+            padding: 4px;
+            font-size: 0.7rem;
+            background: var(--accent-green);
+            color: #000;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        /* SIDEBAR / FASILITAS WARNET */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .facility-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .facility-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .facility-info h4 {
+            font-size: 0.85rem;
+        }
+
+        .facility-info p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.8rem;
+        }
+
+        button:hover:not(:disabled) {
+            background: rgba(255,255,255,0.2);
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-action {
+            background: var(--accent-blue);
+            width: 100%;
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        /* Floating Text */
+        .floating-text {
+            position: absolute;
+            font-weight: bold;
+            color: var(--accent-green);
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 100;
+            font-size: 1rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-25px); }
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .btn-reset {
+            background: transparent;
+            color: #ef4444;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="title">Warnet Tycoon</div>
+        <div class="stats-container">
+            <div class="stat-box">
+                <span class="stat-label">Saldo Kasir</span>
+                <span class="stat-value" id="money-display">$0</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Pasif/dtk (Fasilitas)</span>
+                <span class="stat-value" id="cps-display" style="color: var(--accent-purple);">$0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- AREA UTAMA: MEJA & LANTAI WARNET -->
+        <div class="warnet-floor-container">
+            <!-- MEJA KASIR / OP WARNET -->
+            <div class="cashier-desk">
+                <div class="op-character">
+                    <div class="op-avatar">🎧</div>
+                    <div>
+                        <div style="font-weight: bold; font-size: 0.9rem;">OP Kasir Warnet</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);" id="op-status">Status: Menunggu Pelanggan...</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.5rem;">🖥️💸</div>
+            </div>
+
+            <div class="section-header">
+                <span>Lantai & Unit PC Warnet</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Satu Meja = 2 Pengunjung</span>
+            </div>
+
+            <!-- LANTAI UBIN WARNET -->
+            <div class="floor-grid" id="floor-grid">
+                <!-- Meja Warnet dirender oleh JS -->
+            </div>
+        </div>
+
+        <!-- SIDEBAR: FASILITAS TAMBAHAN WARNET -->
+        <div class="sidebar">
+            <div class="facility-card">
+                <div class="section-header">
+                    <span>Fasilitas Warnet</span>
+                </div>
+
+                <!-- AC RUANGAN -->
+                <div class="facility-item">
+                    <div class="facility-info">
+                        <h4>❄️ AC Ruangan (Lvl <span id="ac-lvl">0</span>)</h4>
+                        <p>Membuat billing 10% lebih cepat</p>
+                    </div>
+                    <button id="btn-buy-ac" onclick="upgradeFacility('ac')">Beli</button>
+                </div>
+
+                <!-- KANTIN & SNACK BAR -->
+                <div class="facility-item">
+                    <div class="facility-info">
+                        <h4>🍜 Kantin Mi & Drink (Lvl <span id="snack-lvl">0</span>)</h4>
+                        <p>Penghasilan pasif +$2/dtk</p>
+                    </div>
+                    <button id="btn-buy-snack" onclick="upgradeFacility('snack')">Beli</button>
+                </div>
+
+                <!-- WIFI HIGH SPEED -->
+                <div class="facility-item">
+                    <div class="facility-info">
+                        <h4>📶 Wi-Fi 5G Fast (Lvl <span id="wifi-lvl">0</span>)</h4>
+                        <p>Tarif billing +20% per jam</p>
+                    </div>
+                    <button id="btn-buy-wifi" onclick="upgradeFacility('wifi')">Beli</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <button class="btn-reset" onclick="resetGame()">Reset Game Warnet</button>
+    </footer>
+
+    <script>
+        // ==========================================
+        // 1. EFEK SUARA (Web Audio API)
+        // ==========================================
+        const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (AudioCtx.state === 'suspended') AudioCtx.resume();
+            const osc = AudioCtx.createOscillator();
+            const gain = AudioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(AudioCtx.destination);
+            const now = AudioCtx.currentTime;
+
+            if (type === 'visitor') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(350, now);
+                osc.frequency.setValueAtTime(550, now + 0.1);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'collect') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(700, now);
+                osc.frequency.setValueAtTime(1100, now + 0.08);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'buy') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.linearRampToValueAtTime(450, now + 0.12);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            }
+        }
+
+        // ==========================================
+        // 2. DATA GAME & STATE
+        // ==========================================
+        const customerAvatars = ['🧑‍💻', '👨‍💻', '👩‍💻', '🧒', '🧢', '🕶️', '🎧', '🎮', '👱‍♂️'];
+
+        const defaultStations = [
+            { id: 'paket_std', name: 'Meja Standard Dual', baseCost: 15, revenue: 6, time: 2500, level: 1, hasOp: false, opCost: 150 },
+            { id: 'paket_gaming', name: 'Meja Gaming Dual RGB', baseCost: 120, revenue: 38, time: 4000, level: 0, hasOp: false, opCost: 1200 },
+            { id: 'paket_esport', name: 'Meja Latihan E-Sport', baseCost: 1000, revenue: 240, time: 6000, level: 0, hasOp: false, opCost: 9000 },
+            { id: 'paket_vip', name: 'Bilik VIP Cyberpunk', baseCost: 12000, revenue: 1900, time: 9000, level: 0, hasOp: false, opCost: 75000 }
+        ];
+
+        let state = {
+            money: 15,
+            stations: JSON.parse(JSON.stringify(defaultStations)),
+            facilities: {
+                ac: { level: 0, baseCost: 50 },
+                snack: { level: 0, baseCost: 100 },
+                wifi: { level: 0, baseCost: 200 }
+            }
+        };
+
+        const progressState = {};
+
+        // DOM Elements
+        const moneyDisplay = document.getElementById('money-display');
+        const cpsDisplay = document.getElementById('cps-display');
+        const floorGrid = document.getElementById('floor-grid');
+        const opStatus = document.getElementById('op-status');
+
+        function formatMoney(amount) {
+            if (amount >= 1e9) return '$' + (amount / 1e9).toFixed(2) + 'B';
+            if (amount >= 1e6) return '$' + (amount / 1e6).toFixed(2) + 'M';
+            if (amount >= 1e3) return '$' + (amount / 1e3).toFixed(1) + 'K';
+            return '$' + Math.floor(amount);
+        }
+
+        function getCost(st) {
+            return Math.floor(st.baseCost * Math.pow(1.15, st.level));
+        }
+
+        function getRevenue(st) {
+            let wifiMultiplier = 1 + (state.facilities.wifi.level * 0.2);
+            return Math.floor(st.revenue * st.level * 2 * wifiMultiplier);
+        }
+
+        function getRandomAvatar() {
+            return customerAvatars[Math.floor(Math.random() * customerAvatars.length)];
+        }
+
+        // Render UI
+        function render() {
+            floorGrid.innerHTML = '';
+            state.stations.forEach((st, index) => {
+                const cost = getCost(st);
+                const revenue = getRevenue(st);
+
+                const card = document.createElement('div');
+                card.className = 'station-card';
+                card.innerHTML = `
+                    <div class="station-title">
+                        <span>${st.name} (Lvl ${st.level})</span>
+                        <span style="color:var(--accent-green)">+${formatMoney(revenue)}</span>
+                    </div>
+
+                    <div class="pc-desk">
+                        <div class="pc-slot" id="slot-1-${st.id}">
+                            <div class="customer-avatar" id="avatar-1-${st.id}">🪑</div>
+                            <span id="status-1-${st.id}" style="color:var(--text-muted)">Kosong</span>
+                        </div>
+                        <div style="align-self:center; color:var(--text-muted);">|</div>
+                        <div class="pc-slot" id="slot-2-${st.id}">
+                            <div class="customer-avatar" id="avatar-2-${st.id}">🪑</div>
+                            <span id="status-2-${st.id}" style="color:var(--text-muted)">Kosong</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-${st.id}"></div>
+                    </div>
+
+                    <!-- SISTEM KASIR KEMBALIAN (AKAN MUNCUL SAAT SELESAI) -->
+                    <div class="cashier-panel" id="cashier-panel-${st.id}" style="display:none;">
+                        <span id="cashier-text-${st.id}">Pengunjung Bayar...</span>
+                        <div class="change-btn-group" id="change-btns-${st.id}"></div>
+                    </div>
+
+                    <button class="btn-action" id="btn-start-${st.id}" onclick="startBilling(${index})" ${st.level === 0 ? 'disabled' : ''}>
+                        ${st.hasOp ? 'Bermain Otomatis' : 'Terima 2 Pelanggan'}
+                    </button>
+
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <button id="btn-buy-${st.id}" style="flex:1;" onclick="buyLevel(${index})">
+                            Upgrade (${formatMoney(cost)})
+                        </button>
+                        ${!st.hasOp && st.level > 0 ? `
+                            <button id="btn-op-${st.id}" style="flex:1;" onclick="buyOperator(${index})">
+                                Auto OP (${formatMoney(st.opCost)})
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                floorGrid.appendChild(card);
+            });
+
+            updateUIState();
+        }
+
+        // Update Tombol & Realtime
+        function updateUIState() {
+            moneyDisplay.innerText = formatMoney(state.money);
+
+            // Perhitungan Pasif dari Kantin
+            let passiveIncome = state.facilities.snack.level * 2;
+            cpsDisplay.innerText = formatMoney(passiveIncome) + '/dtk';
+
+            state.stations.forEach(st => {
+                const buyBtn = document.getElementById(`btn-buy-${st.id}`);
+                if (buyBtn) buyBtn.disabled = state.money < getCost(st);
+
+                const opBtn = document.getElementById(`btn-op-${st.id}`);
+                if (opBtn) opBtn.disabled = state.money < st.opCost;
+            });
+
+            // Fasilitas Sidebar
+            document.getElementById('ac-lvl').innerText = state.facilities.ac.level;
+            document.getElementById('snack-lvl').innerText = state.facilities.snack.level;
+            document.getElementById('wifi-lvl').innerText = state.facilities.wifi.level;
+
+            document.getElementById('btn-buy-ac').disabled = state.money < Math.floor(state.facilities.ac.baseCost * Math.pow(1.5, state.facilities.ac.level));
+            document.getElementById('btn-buy-snack').disabled = state.money < Math.floor(state.facilities.snack.baseCost * Math.pow(1.5, state.facilities.snack.level));
+            document.getElementById('btn-buy-wifi').disabled = state.money < Math.floor(state.facilities.wifi.baseCost * Math.pow(1.5, state.facilities.wifi.level));
+        }
+
+        // Jalankan Billing Meja
+        function startBilling(index) {
+            const st = state.stations[index];
+            if (st.level === 0 || progressState[st.id]?.running) return;
+
+            if (!progressState[st.id]) progressState[st.id] = {};
+            progressState[st.id].running = true;
+
+            const progressBar = document.getElementById(`progress-${st.id}`);
+            const btnStart = document.getElementById(`btn-start-${st.id}`);
+            const slot1 = document.getElementById(`slot-1-${st.id}`);
+            const slot2 = document.getElementById(`slot-2-${st.id}`);
+            const avatar1 = document.getElementById(`avatar-1-${st.id}`);
+            const avatar2 = document.getElementById(`avatar-2-${st.id}`);
+            const status1 = document.getElementById(`status-1-${st.id}`);
+            const status2 = document.getElementById(`status-2-${st.id}`);
+
+            // Animasi Pengunjung Masuk
+            playSound('visitor');
+            if (slot1) slot1.classList.add('active');
+            if (slot2) slot2.classList.add('active');
+            if (avatar1) avatar1.innerText = getRandomAvatar();
+            if (avatar2) avatar2.innerText = getRandomAvatar();
+            if (status1) { status1.innerText = 'Main'; status1.style.color = 'var(--accent-green)'; }
+            if (status2) { status2.innerText = 'Main'; status2.style.color = 'var(--accent-green)'; }
+
+            if (!st.hasOp && btnStart) btnStart.disabled = true;
+
+            // Pengaruh AC pada Kecepatan Durasi Billing
+            let duration = st.time * Math.pow(0.9, state.facilities.ac.level);
+            let startTime = performance.now();
+
+            function animate(currentTime) {
+                let elapsedTime = currentTime - startTime;
+                let fraction = elapsedTime / duration;
+
+                if (fraction < 1) {
+                    if (progressBar) progressBar.style.width = (fraction * 100) + '%';
+                    requestAnimationFrame(animate);
+                } else {
+                    if (progressBar) progressBar.style.width = '0%';
+                    
+                    // Sesi Selesai -> Sistem Pembayaran Kasir
+                    handleCheckout(index);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // SISTEM KASIR DAN KEMBALIAN
+        function handleCheckout(index) {
+            const st = state.stations[index];
+            const earnings = getRevenue(st);
+            const cashierPanel = document.getElementById(`cashier-panel-${st.id}`);
+            const cashierText = document.getElementById(`cashier-text-${st.id}`);
+            const changeBtns = document.getElementById(`change-btns-${st.id}`);
+
+            // Jika Punya Auto OP / Operator -> Otomatis Kasir Beres
+            if (st.hasOp) {
+                finishTransaction(index, earnings);
+                return;
+            }
+
+            // Pelanggan Manual: 50% Kemungkinan Bayar Uang Pas / Butuh Kembalian
+            const needsChange = Math.random() > 0.5;
+            if (cashierPanel) cashierPanel.style.display = 'flex';
+
+            if (!needsChange) {
+                // Uang Pas
+                if (cashierText) cashierText.innerText = `Pelanggan bayar pas (+${formatMoney(earnings)})`;
+                if (changeBtns) {
+                    changeBtns.innerHTML = `<button class="btn-change" onclick="finishTransaction(${index}, ${earnings})">Terima Uang Pas</button>`;
+                }
+            } else {
+                // Butuh Kembalian
+                const extraMoney = Math.floor(earnings * 0.5);
+                const totalPaid = earnings + extraMoney;
+                if (cashierText) cashierText.innerText = `Bayar ${formatMoney(totalPaid)} (Kembalian ${formatMoney(extraMoney)})`;
+                if (changeBtns) {
+                    changeBtns.innerHTML = `
+                        <button class="btn-change" onclick="finishTransaction(${index}, ${earnings + 2})">Beri Kembalian Pas (+Bonus Tips)</button>
+                    `;
+                }
+            }
+
+            opStatus.innerText = `Status: Melayani pembayaran di ${st.name}...`;
+        }
+
+        function finishTransaction(index, finalRevenue) {
+            const st = state.stations[index];
+            const cashierPanel = document.getElementById(`cashier-panel-${st.id}`);
+            const btnStart = document.getElementById(`btn-start-${st.id}`);
+            const slot1 = document.getElementById(`slot-1-${st.id}`);
+            const slot2 = document.getElementById(`slot-2-${st.id}`);
+            const avatar1 = document.getElementById(`avatar-1-${st.id}`);
+            const avatar2 = document.getElementById(`avatar-2-${st.id}`);
+            const status1 = document.getElementById(`status-1-${st.id}`);
+            const status2 = document.getElementById(`status-2-${st.id}`);
+
+            if (cashierPanel) cashierPanel.style.display = 'none';
+
+            // Reset Tampilan Meja
+            if (slot1) slot1.classList.remove('active');
+            if (slot2) slot2.classList.remove('active');
+            if (avatar1) avatar1.innerText = '🪑';
+            if (avatar2) avatar2.innerText = '🪑';
+            if (status1) { status1.innerText = 'Kosong'; status1.style.color = 'var(--text-muted)'; }
+            if (status2) { status2.innerText = 'Kosong'; status2.style.color = 'var(--text-muted)'; }
+
+            state.money += finalRevenue;
+            playSound('collect');
+            showFloatingText(`+${formatMoney(finalRevenue)}`, btnStart);
+
+            progressState[st.id].running = false;
+            opStatus.innerText = 'Status: Menunggu Pelanggan...';
+
+            saveGame();
+            updateUIState();
+
+            if (st.hasOp) {
+                startBilling(index);
+            } else if (btnStart) {
+                btnStart.disabled = false;
+            }
+        }
+
+        // Upgrade Fasilitas (AC, Kantin, Wi-Fi)
+        function upgradeFacility(type) {
+            const fac = state.facilities[type];
+            const cost = Math.floor(fac.baseCost * Math.pow(1.5, fac.level));
+
+            if (state.money >= cost) {
+                state.money -= cost;
+                fac.level++;
+                playSound('buy');
+                saveGame();
+                render();
+            }
+        }
+
+        function buyLevel(index) {
+            const st = state.stations[index];
+            const cost = getCost(st);
+
+            if (state.money >= cost) {
+                state.money -= cost;
+                st.level++;
+                playSound('buy');
+                saveGame();
+                render();
+
+                if (st.hasOp && !progressState[st.id]?.running) {
+                    startBilling(index);
+                }
+            }
+        }
+
+        function buyOperator(index) {
+            const st = state.stations[index];
+
+            if (state.money >= st.opCost && !st.hasOp) {
+                state.money -= st.opCost;
+                st.hasOp = true;
+                playSound('buy');
+                saveGame();
+                render();
+
+                startBilling(index);
+            }
+        }
+
+        function showFloatingText(text, targetEl) {
+            if (!targetEl) return;
+            const rect = targetEl.getBoundingClientRect();
+            const floatEl = document.createElement('div');
+            floatEl.className = 'floating-text';
+            floatEl.innerText = text;
+            floatEl.style.left = `${rect.left + rect.width / 2}px`;
+            floatEl.style.top = `${rect.top - 10}px`;
+            
+            document.body.appendChild(floatEl);
+            setTimeout(() => floatEl.remove(), 1000);
+        }
+
+        // Passive Income Pasif per Detik (Kantin/Snack Bar)
+        setInterval(() => {
+            let passive = state.facilities.snack.level * 2;
+            if (passive > 0) {
+                state.money += passive;
+                updateUIState();
+            }
+        }, 1000);
+
+        setInterval(updateUIState, 100);
+
+        // Save & Load System
+        function saveGame() {
+            localStorage.setItem('warnet_tycoon_v2_save', JSON.stringify(state));
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('warnet_tycoon_v2_save');
+            if (saved) {
+                try {
+                    const loadedState = JSON.parse(saved);
+                    state.money = loadedState.money || 0;
+                    if (loadedState.facilities) state.facilities = loadedState.facilities;
+                    if (loadedState.stations) {
+                        loadedState.stations.forEach(savedSt => {
+                            const target = state.stations.find(s => s.id === savedSt.id);
+                            if (target) {
+                                target.level = savedSt.level;
+                                target.hasOp = savedSt.hasOp;
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error("Gagal load data", e);
+                }
+            }
+        }
+
+        function resetGame() {
+            if (confirm("Reset seluruh data game Warnet Tycoon?")) {
+                localStorage.removeItem('warnet_tycoon_v2_save');
+                location.reload();
+            }
+        }
+
+        window.onload = () => {
+            loadGame();
+            render();
+
+            state.stations.forEach((st, index) => {
+                if (st.level > 0 && st.hasOp) {
+                    startBilling(index);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
